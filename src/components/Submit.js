@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
+import axios from "axios";
 
 const Submit = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const Submit = () => {
     amount: "",
     type: "person",
     attempts: "",
+    file: null,
   });
 
   const handleChange = (e) => {
@@ -18,10 +20,36 @@ const Submit = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    setFormData({
+      ...formData,
+      file: e.target.files[0],
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    if (formData.type === "company" && !formData.file) {
+      alert("Please attach a PDF file.");
+      return;
+    }
+
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("amount", formData.amount);
+    data.append("type", formData.type);
+    data.append("attempts", formData.attempts);
+    if (formData.file) {
+      data.append("file", formData.file);
+    }
+
+    try {
+      const response = await axios.post("/upload", data);
+      console.log("Form submitted:", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
   return (
@@ -99,6 +127,21 @@ const Submit = () => {
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group controlId="formFile">
+              <Form.Label>Upload PDF</Form.Label>
+              <Form.Control
+                type="file"
+                name="file"
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
+            </Form.Group>
+            <a
+              href="http://localhost:5000/file/sample.pdf"
+              download="sample.pdf"
+            >
+              Download Sample PDF
+            </a>
           </>
         )}
         <Button variant="primary" type="submit">
