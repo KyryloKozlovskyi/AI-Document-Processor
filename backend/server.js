@@ -44,6 +44,28 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
+// Import mongoose model
+const File = require("./models/file");
+
+// @route POST /submit
+// @desc Save form data to database
+app.post("/submit", async (req, res) => {
+  const { filename, path, size, contentType } = req.body;
+  const newFile = new File({
+    filename,
+    path,
+    size,
+    contentType,
+  });
+
+  try {
+    const savedFormData = await newFile.save();
+    res.json(savedFormData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // @route POST /upload
 // @desc  Uploads file to DB
 app.post("/upload", upload.single("file"), (req, res) => {
@@ -73,7 +95,6 @@ app.get("/files/:filename", (req, res) => {
         err: "No file exists",
       });
     }
-
     return res.json(file);
   });
 });
@@ -100,6 +121,8 @@ app.get("/file/:filename", (req, res) => {
     }
   });
 });
+
+
 
 const port = 5000;
 
