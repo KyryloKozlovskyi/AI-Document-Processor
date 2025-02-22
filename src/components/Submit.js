@@ -34,19 +34,19 @@ const Submit = () => {
       return;
     }
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("email", formData.email);
-    data.append("amount", formData.amount);
-    data.append("type", formData.type);
-    data.append("attempts", formData.attempts);
-    if (formData.file) {
-      data.append("file", formData.file);
-    }
+    const fileData = new FormData();
+    fileData.append("filename", formData.file.name);
+    fileData.append("path", formData.file.path);
+    fileData.append("size", formData.file.size);
+    fileData.append("contentType", formData.file.type);
 
     try {
-      const response = await axios.post("/upload", data);
-      console.log("Form submitted:", response.data);
+      const formResponse = await axios.post("/submit", {
+        ...formData,
+        fileId,
+      });
+
+      console.log("Form submitted:", formResponse.data);
     } catch (error) {
       console.error("Error uploading file:", error);
     }

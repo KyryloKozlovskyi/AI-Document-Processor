@@ -66,12 +66,6 @@ app.post("/submit", async (req, res) => {
   }
 });
 
-// @route POST /upload
-// @desc  Uploads file to DB
-app.post("/upload", upload.single("file"), (req, res) => {
-  res.json({ file: req.file });
-});
-
 // @route GET /files
 // @desc  Display all files in JSON
 app.get("/files", (req, res) => {
