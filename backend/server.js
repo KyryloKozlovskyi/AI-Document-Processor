@@ -4,13 +4,11 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
-const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const app = express();
 
-// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(methodOverride("_method"));
 
 // Update CORS configuration
 const corsOptions = {
@@ -21,11 +19,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
-
 // Mongo URI
-const mongoURI =
-  "mongodb+srv://admin:admin@cluster0.egsdr.mongodb.net/transactiontestdb";
+const mongoURI = PROCESS.ENV.MONGODB_URI || "mongodb+srv://admin:admin@cluster0.egsdr.mongodb.net/transactiontestdb";
 
 // Create mongo connection
 const conn = mongoose.createConnection(mongoURI, {
@@ -36,11 +31,16 @@ const conn = mongoose.createConnection(mongoURI, {
 // Init gfs
 let gfs;
 
-conn.once("open", () => {
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
-});
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    // init gfs stream
+    gfs = Grid(mongoose.connection.db, mongoose.mongo);
+    gfs.collection('uploads'); // collection name
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -113,8 +113,7 @@ app.get("/file/:filename", (req, res) => {
         err: "No file exists",
       });
     }
-
-    // Check if file
+    // Check if file is PDF
     if (file.contentType === "application/pdf") {
       // Read output to browser
       const readstream = gfs.createReadStream(file.filename);
@@ -125,6 +124,18 @@ app.get("/file/:filename", (req, res) => {
       });
     }
   });
+});
+
+// @route DELETE /file/:filename
+// @desc  Delete file with given filename
+app.delete('/file/:filename', async (req, res) => {
+  try {
+    await gfs.files.deleteOne({ filename: req.params.filename });
+    res.status(200).json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 
