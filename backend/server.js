@@ -1,16 +1,27 @@
 const express = require("express");
+const cors = require('cors');
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
-
 const app = express();
 
 // Middleware
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
+
+// Update CORS configuration
+const corsOptions = {
+  origin: 'http://127.0.0.1:3000',
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept"
+};
+
+app.use(cors(corsOptions));
+
+
 
 // Mongo URI
 const mongoURI =
