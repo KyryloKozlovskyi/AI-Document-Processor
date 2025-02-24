@@ -62,7 +62,12 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "Only PDF files are allowed" });
     }
 
-    const submission = new Submission ({
+    // check if email is valid
+    if (!email.includes('@') || !email.includes('.')) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
+
+    const submission = new Submission({
       type,
       name,
       email,
