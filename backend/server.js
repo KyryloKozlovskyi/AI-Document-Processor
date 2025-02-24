@@ -97,7 +97,7 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
 
     // Send confirmation email
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: process.env.RESEND_DOMAIN,
       to: email,
       subject: 'Submission Confirmation',
       text: `Dear ${name},\n\nThank you for your submission. We have received your ${type} submission successfully.\n\nBest regards,\nYour Company`
