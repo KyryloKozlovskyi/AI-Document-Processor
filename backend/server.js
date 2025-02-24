@@ -43,6 +43,32 @@ mongoose
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const submissionSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      required: true,
+      enum: ["person", "company"],
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    file: {
+      data: Buffer,
+      contentType: String,
+      name: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 // Create Submission model
 const Submission = mongoose.model("Submission", submissionSchema);
 
