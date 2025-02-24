@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
     "gridfs-stream": "^1.1.1",
     "method-override": "^3.0.0",
     "mongoose": "^8.10.1",
