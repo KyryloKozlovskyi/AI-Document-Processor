@@ -4,56 +4,87 @@ import axios from "axios";
 
 const Submit = () => {
   const [formData, setFormData] = useState({
+    type: "person",
     name: "",
     email: "",
-    amount: "",
-    type: "person",
-    attempts: "",
     file: null,
   });
 
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prevState) => ({
+      ...prevState,
       file: e.target.files[0],
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setError("");
+
+    // Validation
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return;
+    }
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return;
+    }
     if (formData.type === "company" && !formData.file) {
-      alert("Please attach a PDF file.");
+      setError("PDF file is required for company submissions");
       return;
     }
 
-    const fileData = new FormData();
-    fileData.append("filename", formData.file.name);
-    fileData.append("path", formData.file.path);
-    fileData.append("size", formData.file.size);
-    fileData.append("contentType", formData.file.type);
-
     try {
-      const formResponse = await axios.post("/submit", {
-        ...formData,
-        fileId,
-      });
+      const data = new FormData();
+      data.append("type", formData.type);
+      data.append("name", formData.name);
+      data.append("email", formData.email);
+      if (formData.file) {
+        data.append("file", formData.file);
+      }
 
-      console.log("Form submitted:", formResponse.data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
+      const response = await axios.post(
+        "http://localhost:5000/api/submit",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setMessage(response.data.message);
+      setFormData({
+        type: "person",
+        name: "",
+        email: "",
+        file: null,
+      });
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "An error occurred during submission"
+      );
+      console.error("Submission error:", err);
     }
   };
 
   return (
     <Container>
+      {message && <div className="alert alert-success">{message}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formType">
           <Form.Label>Type</Form.Label>
@@ -87,15 +118,6 @@ const Submit = () => {
                 onChange={handleChange}
               />
             </Form.Group>
-            <Form.Group controlId="formAttempts">
-              <Form.Label>How many times did you attempt the exam?</Form.Label>
-              <Form.Control
-                type="number"
-                name="attempts"
-                value={formData.attempts}
-                onChange={handleChange}
-              />
-            </Form.Group>
           </>
         )}
         {formData.type === "company" && (
@@ -118,15 +140,6 @@ const Submit = () => {
                 onChange={handleChange}
               />
             </Form.Group>
-            <Form.Group controlId="formAmount">
-              <Form.Label>Amount</Form.Label>
-              <Form.Control
-                type="number"
-                name="amount"
-                value={formData.amount}
-                onChange={handleChange}
-              />
-            </Form.Group>
             <Form.Group controlId="formFile">
               <Form.Label>Upload PDF</Form.Label>
               <Form.Control
@@ -136,12 +149,6 @@ const Submit = () => {
                 onChange={handleFileChange}
               />
             </Form.Group>
-            <a
-              href="http://localhost:5000/file/sample.pdf"
-              download="sample.pdf"
-            >
-              Download Sample PDF
-            </a>
           </>
         )}
         <Button variant="primary" type="submit">
