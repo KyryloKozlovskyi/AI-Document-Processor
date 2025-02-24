@@ -12,6 +12,13 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const { Resend } = require('resend');
 
+const submissionSchema = require('./models/submission');
+const eventSchema = require('./models/event');
+
+// Create Mongoose models
+const Submission = mongoose.model("Submission", submissionSchema);
+const Event = mongoose.model("Event", eventSchema);
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Initialize Express app
@@ -45,35 +52,6 @@ mongoose
 // Configure Multer for handling file uploads in memory
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
-const submissionSchema = new mongoose.Schema(
-  {
-    type: {
-      type: String,
-      required: true,
-      enum: ["person", "company"],
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    file: {
-      data: Buffer,
-      contentType: String,
-      name: String,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-// Create Submission model
-const Submission = mongoose.model("Submission", submissionSchema);
 
 // Create submission endpoint
 app.post("/api/submit", upload.single("file"), async (req, res) => {
@@ -152,9 +130,17 @@ app.get("/api/submissions/:id/file", async (req, res) => {
   }
 });
 
+app.get("/api/events", async (req, res) => {
+  try {
+    const events = await Event.find().sort({ date: 1 });
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ message: "Error fetching events" });
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-module.exports = mongoose.model("Submission", submissionSchema);
