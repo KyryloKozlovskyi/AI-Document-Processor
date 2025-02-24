@@ -1,10 +1,11 @@
 import React from "react";
 
-// Footer component
 const Footer = () => {
   return (
-    <footer class="bg-body-tertiary text-center">
-      <div class="text-center p-3">© 2025 Copyright: Transaction Website</div>
+    <footer className="bg-body-tertiary text-center">
+      <div className="text-center p-3">
+        © 2025 Copyright: AI Document Processor
+      </div>
     </footer>
   );
 };
