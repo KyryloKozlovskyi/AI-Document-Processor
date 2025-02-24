@@ -58,7 +58,11 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
   try {
     const { type, name, email } = req.body;
 
-    const submission = new Submission({
+    if (req.file && req.file.mimetype !== 'application/pdf') {
+      return res.status(400).json({ message: "Only PDF files are allowed" });
+    }
+
+    const submission = new Submission ({
       type,
       name,
       email,
