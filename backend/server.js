@@ -1,145 +1,123 @@
+// Load environment variables from .env file
+require("dotenv").config();
+
+// Server port, default 5000
+const port = process.env.SERVER_PORT || 5000;
+
+// Import required modules
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
-const bodyParser = require("body-parser");
+
+// Initialize Express app
 const app = express();
 
+// Enable CORS for all incoming requests
+app.use(cors());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
+// Parse incoming request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Update CORS configuration
-const corsOptions = {
-  origin: 'http://127.0.0.1:3000',
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept"
-};
-
-app.use(cors(corsOptions));
-
-// Mongo URI
-const mongoURI = PROCESS.ENV.MONGODB_URI || "mongodb+srv://admin:admin@cluster0.egsdr.mongodb.net/transactiontestdb";
-
-// Create mongo connection
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// Init gfs
-let gfs;
-
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // init gfs stream
-    gfs = Grid(mongoose.connection.db, mongoose.mongo);
-    gfs.collection('uploads'); // collection name
-  })
+// Connect to MongoDB using Mongoose
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
   .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1); // Exit the process if the database connection fails
   });
 
-// Create storage engine
-const storage = new GridFsStorage({
-  url: mongoURI,
-  file: (req, file) => {
-    return {
-      bucketName: "uploads", // collection name
-      filename: file.originalname,
-    };
-  },
-});
+// Configure Multer for handling file uploads in memory
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-const upload = multer({ storage });
+// Create Submission model
+const Submission = mongoose.model("Submission", submissionSchema);
 
-// Import mongoose model
-const File = require("./models/file");
-
-// @route POST /submit
-// @desc Save form data to database
-app.post("/submit", async (req, res) => {
-  const { filename, path, size, contentType } = req.body;
-  const newFile = new File({
-    filename,
-    path,
-    size,
-    contentType,
-  });
-
+// Create submission endpoint
+app.post("/api/submit", upload.single("file"), async (req, res) => {
   try {
-    const savedFormData = await newFile.save();
-    res.json(savedFormData);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    const { type, name, email } = req.body;
 
-// @route GET /files
-// @desc  Display all files in JSON
-app.get("/files", (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "No files exist",
-      });
-    }
+    const submission = new Submission({
+      type,
+      name,
+      email,
+      file: req.file
+        ? {
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+            name: req.file.originalname,
+          }
+        : null,
+    });
 
-    return res.json(files);
-  });
-});
+    await submission.save();
 
-// @route GET /files/:filename
-// @desc  Display single file object
-app.get("/files/:filename", (req, res) => {
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: "No file exists",
-      });
-    }
-    return res.json(file);
-  });
-});
-
-// @route GET /file/:filename
-// @desc  Download single file
-app.get("/file/:filename", (req, res) => {
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: "No file exists",
-      });
-    }
-    // Check if file is PDF
-    if (file.contentType === "application/pdf") {
-      // Read output to browser
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
-    } else {
-      res.status(404).json({
-        err: "Not a PDF",
-      });
-    }
-  });
-});
-
-// @route DELETE /file/:filename
-// @desc  Delete file with given filename
-app.delete('/file/:filename', async (req, res) => {
-  try {
-    await gfs.files.deleteOne({ filename: req.params.filename });
-    res.status(200).json({ message: 'File deleted successfully' });
+    res.status(201).json({
+      message: "Submission successful",
+      submission: {
+        type: submission.type,
+        name: submission.name,
+        email: submission.email,
+        fileName: submission.file?.name,
+      },
+    });
   } catch (error) {
-    console.error('Error deleting file:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Submission error:", error);
+    res.status(500).json({
+      message: "Error processing submission",
+      error: error.message,
+    });
   }
 });
 
+// Get all submissions
+app.get("/api/submissions", async (req, res) => {
+  try {
+    const submissions = await Submission.find().sort({ createdAt: -1 });
+    res.json(submissions);
+  } catch (error) {
+    console.error("Error fetching submissions:", error);
+    res.status(500).json({ message: "Error fetching submissions" });
+  }
+});
 
+// Download file endpoint
+app.get("/api/submissions/:id/file", async (req, res) => {
+  try {
+    const submission = await Submission.findById(req.params.id);
+    if (!submission || !submission.file) {
+      return res.status(404).json({ message: "File not found" });
+    }
 
-const port = 5000;
+    res.set({
+      "Content-Type": submission.file.contentType,
+      "Content-Disposition": `attachment; filename="${submission.file.name}"`,
+    });
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+    res.send(submission.file.data);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    res.status(500).json({ message: "Error downloading file" });
+  }
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+module.exports = mongoose.model("Submission", submissionSchema);
