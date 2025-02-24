@@ -10,6 +10,9 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Initialize Express app
 const app = express();
@@ -83,14 +86,22 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
       email,
       file: req.file
         ? {
-            data: req.file.buffer,
-            contentType: req.file.mimetype,
-            name: req.file.originalname,
-          }
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          name: req.file.originalname,
+        }
         : null,
     });
 
     await submission.save();
+
+    // Send confirmation email
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: email,
+      subject: 'Submission Confirmation',
+      text: `Dear ${name},\n\nThank you for your submission. We have received your ${type} submission successfully.\n\nBest regards,\nYour Company`
+    });
 
     res.status(201).json({
       message: "Submission successful",
