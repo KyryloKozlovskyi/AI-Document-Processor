@@ -4,6 +4,7 @@ import axios from "axios";
 
 const Submit = () => {
   const [formData, setFormData] = useState({
+    event: "1",
     type: "person",
     name: "",
     email: "",
@@ -49,6 +50,7 @@ const Submit = () => {
 
     try {
       const data = new FormData();
+      data.append("eventId", formData.event);
       data.append("type", formData.type);
       data.append("name", formData.name);
       data.append("email", formData.email);

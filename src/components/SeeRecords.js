@@ -13,6 +13,10 @@ const SeeRecords = () => {
         const response = await axios.get(
           "http://localhost:5000/api/submissions"
         );
+        
+        // debug log
+        console.log(response.data);
+
         setRecords(response.data);
         setLoading(false);
       } catch (err) {
