@@ -56,7 +56,7 @@ const upload = multer({ storage: storage });
 // Create submission endpoint
 app.post("/api/submit", upload.single("file"), async (req, res) => {
   try {
-    const { type, name, email } = req.body;
+    const { eventId, type, name, email } = req.body;
 
     if (req.file && req.file.mimetype !== 'application/pdf') {
       return res.status(400).json({ message: "Only PDF files are allowed" });
@@ -68,6 +68,7 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
     }
 
     const submission = new Submission({
+      eventId,
       type,
       name,
       email,
@@ -93,6 +94,7 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
     res.status(201).json({
       message: "Submission successful",
       submission: {
+        eventId: submission.eventId,
         type: submission.type,
         name: submission.name,
         email: submission.email,
