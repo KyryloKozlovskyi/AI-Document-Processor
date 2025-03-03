@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+// User Schema to store admin details
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -17,6 +18,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Hashing the password before saving it to the database
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);

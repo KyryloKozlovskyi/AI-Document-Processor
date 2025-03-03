@@ -4,18 +4,22 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAdmin } from "./AdminContext";
 
+// Admin login component
 const Login = () => {
+  // State to store the login credentials
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const { login } = useAdmin();
+  const [error, setError] = useState(""); // State to store the error message
+  const navigate = useNavigate(); // Navigation object to redirect the user
+  const { login } = useAdmin(); // Function to update the global state with admin details
 
+  // Function to handle the form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send a POST request to the server with the login credentials
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         credentials

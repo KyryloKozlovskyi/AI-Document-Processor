@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
+// AdminPanel component is a dashboard for the admin user. It contains three cards that link to different admin views.
 const AdminPanel = () => {
   const navigate = useNavigate();
 

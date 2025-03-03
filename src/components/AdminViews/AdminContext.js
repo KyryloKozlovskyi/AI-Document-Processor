@@ -1,8 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 
-const AdminContext = createContext(null);
+const AdminContext = createContext(null); // Initialize context
 
+// AdminProvider component to wrap the application with the context provider
 export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ export const AdminProvider = ({ children }) => {
     }
   }, []);
 
+  // Function to verify the token
   const verifyToken = async (token) => {
     try {
       await axios.get("http://localhost:5000/api/auth/verify", {
@@ -29,11 +31,13 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
+  // Function to login
   const login = (token) => {
     localStorage.setItem("token", token);
     setIsAdmin(true);
   };
 
+  // Function to logout
   const logout = () => {
     localStorage.removeItem("token");
     setIsAdmin(false);
@@ -43,6 +47,7 @@ export const AdminProvider = ({ children }) => {
     return <div>Loading...</div>;
   }
 
+  // Return the context provider with the value of the context
   return (
     <AdminContext.Provider value={{ isAdmin, login, logout }}>
       {children}
