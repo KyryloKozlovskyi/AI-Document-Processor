@@ -20,8 +20,12 @@ const EventCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            
-            const response = await axios.post('http://localhost:5000/api/events', formData);
+            const token = localStorage.getItem('token');
+            const response = await axios.post('http://localhost:5000/api/events', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             console.log('Event created successfully:', response.data);
         } catch (error) {
             console.error('Error creating event:', error);
