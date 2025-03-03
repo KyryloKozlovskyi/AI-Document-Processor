@@ -9,23 +9,66 @@ import EventMenu from "./components/AdminViews/EventMenu";
 import EventCreate from "./components/AdminViews/EventCreate.js";
 import EventUpdate from "./components/AdminViews/EventUpdate.js";
 import AdminPanel from "./components/AdminViews/AdminPanel";
+import { AdminProvider } from "./components/AdminViews/AdminContext";
+import ProtectedRoute from "./components/AdminViews/ProtectedRoute";
+import Login from "./components/AdminViews/Login";
 
 function App() {
   return (
-    <Router>
-      <NavigationBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/submit" element={<Submit />} />
-        <Route path="/records" element={<SeeRecords />} />
-        <Route path="/events" element={<EventMenu />} />
-        <Route path="/events/create" element={<EventCreate />} />
-        <Route path="/events/update/:id" element={<EventUpdate />} />
-        <Route path="/admin" element={<AdminPanel />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <AdminProvider>
+      <Router>
+        <NavigationBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/submit" element={<Submit />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/records"
+            element={
+              <ProtectedRoute>
+                <SeeRecords />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <EventMenu />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events/create"
+            element={
+              <ProtectedRoute>
+                <EventCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events/update/:id"
+            element={
+              <ProtectedRoute>
+                <EventUpdate />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+        <Footer />
+      </Router>
+    </AdminProvider>
   );
 }
 
