@@ -3,6 +3,7 @@ import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
 
 const Submit = () => {
+  const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
     event: "1",
     type: "person",
@@ -10,6 +11,20 @@ const Submit = () => {
     email: "",
     file: null,
   });
+
+  // Fetch events from server on initial render
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/events");
+        setEvents(response.data);
+      } catch (err) {
+        console.error("Events fetch error:", err);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
