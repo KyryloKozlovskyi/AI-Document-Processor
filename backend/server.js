@@ -141,6 +141,7 @@ app.get("/api/submissions/:id/file", async (req, res) => {
   }
 });
 
+// Get all events
 app.get("/api/events", async (req, res) => {
   try {
     const events = await Event.find().sort({ date: 1 });
@@ -150,6 +151,18 @@ app.get("/api/events", async (req, res) => {
     res.status(500).json({ message: "Error fetching events" });
   }
 });
+
+// Update event
+app.put("/api/events/:id", async (req, res) => {
+  try {
+    await eventSchema.findByIdAndUpdate(req.params.id, req.body);
+    res.status(204).end();
+  } catch (error) {
+    console.error("Error updating event:", error);
+    res.status(500).json({ message: "Error updating event" });
+  }
+});
+
 
 // Start server
 app.listen(port, () => {
