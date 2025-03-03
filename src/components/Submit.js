@@ -103,7 +103,7 @@ const Submit = () => {
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formType">
+        <Form.Group controlId="formEvent">
 
           {/* !!! EVENTS !!! */}
         <Form.Label>Event</Form.Label>
@@ -115,11 +115,11 @@ const Submit = () => {
           >
             {events.map((event) => (
               <option key={event._id} value={event._id}>
-                {event.courseName} - {event.venue} - {event.date}
+                {event.courseName} - {event.date}
               </option>
             ))}
           </Form.Control>
-          
+
           <Form.Label>Type</Form.Label>
           <Form.Control
             as="select"
