@@ -110,6 +110,12 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
   }
 });
 
+// get a locally stored pdf file
+app.get("/companyform", (req, res) => {
+  console.log(__dirname);
+  res.sendFile(__dirname + "/resources/companyform.pdf");
+});
+
 // Get all submissions
 app.get("/api/submissions", async (req, res) => {
   try {
