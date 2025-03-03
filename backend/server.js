@@ -163,6 +163,17 @@ app.put("/api/events/:id", async (req, res) => {
   }
 });
 
+// Delete event
+app.delete("/api/events/:id", async (req, res) => {
+  try {
+    await eventSchema.findByIdAndDelete(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({ message: "Error deleting event" });
+  }
+});
+
 
 // Start server
 app.listen(port, () => {
