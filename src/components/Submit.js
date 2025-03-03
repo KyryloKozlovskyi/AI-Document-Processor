@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
 
 const Submit = () => {
+
   const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
-    event: "1",
     type: "person",
     name: "",
     email: "",
     file: null,
   });
 
-  // Fetch events from server on initial render
   useEffect(() => {
+
     const fetchEvents = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/events");
@@ -25,6 +25,8 @@ const Submit = () => {
 
     fetchEvents();
   }, []);
+
+
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -103,10 +105,9 @@ const Submit = () => {
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formEvent">
 
-          {/* !!! EVENTS !!! */}
-        <Form.Label>Event</Form.Label>
+        <Form.Group controlId="formEvent">
+          <Form.Label>Event</Form.Label>
           <Form.Control
             as="select"
             name="event"
@@ -115,11 +116,12 @@ const Submit = () => {
           >
             {events.map((event) => (
               <option key={event._id} value={event._id}>
-                {event.courseName} - {event.date}
+                {event.courseName} - €{event.price}
               </option>
             ))}
           </Form.Control>
-
+        </Form.Group>
+        <Form.Group controlId="formType">
           <Form.Label>Type</Form.Label>
           <Form.Control
             as="select"
@@ -147,7 +149,7 @@ const Submit = () => {
               <Form.Control
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.email.toLowerCase()}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -169,12 +171,17 @@ const Submit = () => {
               <Form.Control
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.email.toLowerCase()}
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group controlId="formDownload">
+              <Button variant="primary" onClick={() => window.open("http://localhost:5000/companyform")}>
+                Download PDF
+              </Button>
+            </Form.Group>
             <Form.Group controlId="formFile">
-              <Form.Label>Upload PDF</Form.Label>
+              <Form.Label>Upload signed PDF</Form.Label>
               <Form.Control
                 type="file"
                 name="file"
