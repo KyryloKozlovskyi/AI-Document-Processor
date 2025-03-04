@@ -82,7 +82,7 @@ const SeeRecords = () => {
         return filteredRecords.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        case "event":
+        case "eventId":
           return filteredRecords.sort(
             (a, b) => a.eventId.localeCompare(b.eventId)
           );
@@ -113,7 +113,7 @@ const SeeRecords = () => {
             <option value="date">Filter by Date</option>
             <option value="name">Filter by Name</option>
             <option value="type">Filter by Type</option>
-            <option value="type">Filter by Event</option>
+            <option value="eventId">Filter by Event</option>
           </Form.Select>
         </Form.Group>
       </div>
