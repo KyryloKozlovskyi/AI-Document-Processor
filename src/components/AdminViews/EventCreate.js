@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const EventCreate = () => {
+
+    const navigate = useNavigate();
+    
     const [formData, setFormData] = useState({
         courseName: '',
         venue: '',
@@ -10,8 +13,6 @@ const EventCreate = () => {
         price: '',
         emailText: ''
     });
-
-    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -30,8 +31,8 @@ const EventCreate = () => {
                 },
             });
             console.log('Event created successfully:', response.data);
-            // Navigate back to admin panel
-            navigate('/admin/');
+            // redirect to admin page
+            navigate('/admin');
         } catch (error) {
             console.error('Error creating event:', error);
         }

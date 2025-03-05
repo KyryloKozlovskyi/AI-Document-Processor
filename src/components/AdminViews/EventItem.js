@@ -39,6 +39,24 @@ const EventItem = ({ myEvent, ReloadData }) => {
           <p className="d-flex justify-content-center">
             {myEvent.venue} ({new Date(myEvent.date).toLocaleDateString()})
           </p>
+          <blockquote className="blockquote mb-0">
+            <div className="d-flex justify-content-center">
+              {myEvent.posterUrl && (
+                <div className="d-flex justify-content-center">
+                  <img
+                    src={myEvent.posterUrl}
+                    alt={myEvent.courseName}
+                    className="img-fluid"
+                    style={{
+                      maxWidth: "50%",
+                      height: "auto",
+                      marginBottom: "10px",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </blockquote>
         </Card.Body>
         <Card.Footer>
           <div className="d-flex justify-content-between">

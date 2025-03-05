@@ -10,6 +10,8 @@ const EventUpdate = () => {
     courseName: '',
     venue: '',
     date: '',
+    price: '',
+    emailText: ''
   });
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -92,6 +94,28 @@ const EventUpdate = () => {
             onChange={handleChange}
             required
           />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Price:</label>
+          <input
+            type="number"
+            className="form-control"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Email Text:</label>
+          <textarea
+            className="form-control"
+            name="emailText"
+            value={formData.emailText}
+            onChange={handleChange}
+            required
+            rows="4"
+          ></textarea>
         </div>
         <Button variant="primary" type="submit">
           Update Event

@@ -1,6 +1,5 @@
 import React from "react";
 
-// Component for the About page
 const About = () => {
   return (
     <div>

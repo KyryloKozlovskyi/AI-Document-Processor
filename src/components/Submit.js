@@ -3,9 +3,9 @@ import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
 
 const Submit = () => {
-
   const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
+    eventId: "",
     type: "person",
     name: "",
     email: "",
@@ -13,7 +13,6 @@ const Submit = () => {
   });
 
   useEffect(() => {
-
     const fetchEvents = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/events");
@@ -25,8 +24,6 @@ const Submit = () => {
 
     fetchEvents();
   }, []);
-
-
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -52,6 +49,10 @@ const Submit = () => {
     setError("");
 
     // Validation
+    if (!formData.eventId) {
+      setError("Please select a valid event");
+      return;
+    }
     if (!formData.name.trim()) {
       setError("Name is required");
       return;
@@ -67,7 +68,7 @@ const Submit = () => {
 
     try {
       const data = new FormData();
-      data.append("eventId", formData.event);
+      data.append("eventId", formData.eventId);
       data.append("type", formData.type);
       data.append("name", formData.name);
       data.append("email", formData.email);
@@ -87,10 +88,12 @@ const Submit = () => {
 
       setMessage(response.data.message);
       setFormData({
+        eventId: "",
         type: "person",
         name: "",
         email: "",
         file: null,
+        paid: false,
       });
     } catch (err) {
       setError(
@@ -105,15 +108,15 @@ const Submit = () => {
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       <Form onSubmit={handleSubmit}>
-
         <Form.Group controlId="formEvent">
           <Form.Label>Event</Form.Label>
           <Form.Control
             as="select"
-            name="event"
-            value={formData.event}
+            name="eventId" // Change this to match the key in formData
+            value={formData.eventId}
             onChange={handleChange}
           >
+            <option value="">Select an event</option>
             {events.map((event) => (
               <option key={event._id} value={event._id}>
                 {event.courseName} - €{event.price}
