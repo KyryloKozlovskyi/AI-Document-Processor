@@ -7,7 +7,8 @@ const SeeRecords = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [filterBy, setFilterBy] = useState("date");
-  const[events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(""); // State for selected course
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -33,6 +34,7 @@ const SeeRecords = () => {
             },
           }
         );
+        console.log(response.data);
         setRecords(response.data);
         setLoading(false);
       } catch (err) {
@@ -82,13 +84,18 @@ const SeeRecords = () => {
         return filteredRecords.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        case "eventId":
-          return filteredRecords.sort(
-            (a, b) => a.eventId.localeCompare(b.eventId)
-          );
+      case "eventId":
+        return filteredRecords.sort(
+          (a, b) => a.eventId.localeCompare(b.eventId)
+        );
       default:
         return filteredRecords;
     }
+  };
+
+  const filterByCourse = (records, selectedCourse) => {
+    if (!selectedCourse) return records;
+    return records.filter(record => record.eventId === selectedCourse);
   };
 
   if (loading) {
@@ -99,23 +106,41 @@ const SeeRecords = () => {
     return <Container className="text-danger">{error}</Container>;
   }
 
-  const filteredRecords = filterRecords(records, filterBy);
+  const filteredRecords = filterByCourse(filterRecords(records, filterBy), selectedCourse);
 
   return (
     <Container>
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
-        <Form.Group style={{ width: "200px" }}>
-          <Form.Select
-            value={filterBy}
-            onChange={(e) => setFilterBy(e.target.value)}
-          >
-            <option value="date">Filter by Date</option>
-            <option value="name">Filter by Name</option>
-            <option value="type">Filter by Type</option>
-            <option value="eventId">Filter by Event</option>
-          </Form.Select>
-        </Form.Group>
+        <div className="d-flex">
+          <Badge bg="primary m-2">
+            Records: {filteredRecords.length}
+          </Badge>
+          <Form.Group style={{ width: "200px", marginRight: "10px" }}>
+            <Form.Select
+              value={filterBy}
+              onChange={(e) => setFilterBy(e.target.value)}
+            >
+              <option value="date">Filter by Date</option>
+              <option value="name">Filter by Name</option>
+              <option value="type">Filter by Type</option>
+              <option value="eventId">Filter by Event</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group style={{ width: "200px" }}>
+            <Form.Select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+            >
+              <option value="">All Courses</option>
+              {events.map((event) => (
+                <option key={event._id} value={event._id}>
+                  {event.courseName}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </div>
       </div>
       <Table striped bordered hover>
         <thead>
@@ -126,6 +151,7 @@ const SeeRecords = () => {
             <th>Email</th>
             <th>File</th>
             <th>Submitted At</th>
+            <th>Paid</th>
           </tr>
         </thead>
         <tbody>
@@ -154,7 +180,42 @@ const SeeRecords = () => {
                   "No file"
                 )}
               </td>
-              <td>{new Date(record.createdAt).toLocaleDateString()}</td>
+              <td>
+                {new Date(record.createdAt).toLocaleDateString()}
+              </td>
+              <td>
+                <Form.Check
+                  type="checkbox"
+                  checked={record.paid}
+                  onChange={async () => {
+                    const confirmUpdate = window.confirm(
+                      "Are you sure you want to update the payment status?"
+                    );
+                    if (!confirmUpdate) {
+                      return; // If user cancels, do nothing
+                    }
+                    try {
+                      const token = localStorage.getItem("token");
+                      await axios.patch(
+                        `http://localhost:5000/api/submissions/${record._id}`,
+                        { paid: !record.paid },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                      );
+                      setRecords(records.map(r =>
+                        r._id === record._id ? { ...r, paid: !r.paid } : r
+                      ));
+                    } catch (err) {
+                      console.error("Error updating payment status:", err);
+                    }
+                  }}
+                  inline
+                />
+                {record.paid ? (
+                  <Badge bg="success">Paid</Badge>
+                ) : (
+                  <Badge bg="danger">Not Paid</Badge>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
