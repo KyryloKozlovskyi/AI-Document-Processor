@@ -3,9 +3,15 @@ import pytesseract
 from pdf2image import convert_from_path
 from PIL import Image
 import tempfile
+import sys
+import argparse
+
+# Import the query_deepseek function
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from query_deepseek import query_deepseek
 
 # Set the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe' 
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=None):
     """
@@ -15,7 +21,7 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=None):
         pdf_path (str): Path to the PDF file
         lang (str): Language for OCR (default: 'eng' for English)
         dpi (int): DPI for PDF to image conversion (higher is better quality but slower)
-        poppler_path (str): Path to Poppler bin directory
+        poppler_path (str): Path to Poppler binaries
     
     Returns:
         str: Extracted text from the PDF
@@ -41,12 +47,12 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=None):
             
             # Remove temporary image file
             os.remove(temp_img_path)
-        
+    
     # Join all pages and return
     return '\n\n'.join(all_text)
 
 
-def process_pdf_directory(directory_path, output_directory=None, lang='eng', poppler_path=None):
+def process_pdf_directory(directory_path, output_directory=None, lang='eng', poppler_path=None, analyze=False):
     """
     Process all PDFs in a directory and save extracted text to files.
     
@@ -55,6 +61,7 @@ def process_pdf_directory(directory_path, output_directory=None, lang='eng', pop
         output_directory (str, optional): Directory to save text files, defaults to same as input
         lang (str): Language for OCR (default: 'eng')
         poppler_path (str): Path to Poppler binaries
+        analyze (bool): Whether to analyze the text with DeepSeek model
     """
     if output_directory is None:
         output_directory = directory_path
@@ -81,21 +88,95 @@ def process_pdf_directory(directory_path, output_directory=None, lang='eng', pop
                 
                 print(f"Successfully created {txt_filename}")
                 
+                # Analyze with DeepSeek if requested
+                if analyze:
+                    analyze_text_with_deepseek(text, os.path.join(output_directory, 
+                                              os.path.splitext(filename)[0] + '_analysis.txt'))
+                
             except Exception as e:
                 print(f"Error processing {filename}: {e}")
 
-if __name__ == "__main__":
-    # Example usage
-    pdf_path = r"test.pdf" 
+
+def analyze_text_with_deepseek(text, output_file=None, prompt_prefix=""):
+    """
+    Analyze the extracted text using the DeepSeek model.
     
-    # Specify the path to the Poppler binaries
-    poppler_path = r"C:\Program Files\poppler-24.08.0\Library\bin"  # Adjust this path as needed
+    Args:
+        text (str): The text to analyze
+        output_file (str, optional): Path to save the analysis
+        prompt_prefix (str): Additional context for the prompt
+    
+    Returns:
+        str: The AI's analysis of the text
+    """
+    # Truncate text if too long (most models have token limits)
+    MAX_CHARS = 12000  # Approximate limit - adjust as needed
+    if len(text) > MAX_CHARS:
+        analysis_text = text[:MAX_CHARS] + "...[text truncated due to length]"
+    else:
+        analysis_text = text
+        
+    # Create prompt
+    if not prompt_prefix:
+        prompt_prefix = "The following is text extracted from a PDF using OCR. Please summarize the key points and main ideas:"
+    
+    prompt = f"{prompt_prefix}\n\n{analysis_text}"
+    
+    print("Analyzing extracted text with DeepSeek AI...")
+    
+    # Call the DeepSeek model
+    analysis = query_deepseek(prompt)
+    
+    # Save to file if output path specified
+    if output_file:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(analysis)
+        print(f"Analysis saved to {output_file}")
+    
+    return analysis
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process PDFs with OCR and optionally analyze with DeepSeek")
+    parser.add_argument("--pdf", "-p", type=str, help="Path to PDF file or directory")
+    parser.add_argument("--output", "-o", type=str, help="Output directory for processed files")
+    parser.add_argument("--analyze", "-a", action="store_true", help="Analyze extracted text with DeepSeek")
+    parser.add_argument("--poppler", type=str, default=r"C:\Program Files\poppler-24.08.0\Library\bin",
+                        help="Path to Poppler binaries")
+    
+    args = parser.parse_args()
+    
+    # If no path provided, use the example
+    pdf_path = args.pdf if args.pdf else "Fionn McCarthy.pdf"
+    poppler_path = args.poppler
     
     # For single file
     if os.path.isfile(pdf_path):
+        print(f"Processing single file: {pdf_path}")
         text = extract_text_from_pdf(pdf_path, poppler_path=poppler_path)
-        print("Extracted text:")
-        print(text)
+        
+        # Save to text file
+        output_dir = args.output if args.output else os.path.dirname(pdf_path)
+        os.makedirs(output_dir, exist_ok=True)
+        
+        txt_filename = os.path.splitext(os.path.basename(pdf_path))[0] + '.txt'
+        txt_path = os.path.join(output_dir, txt_filename)
+        
+        with open(txt_path, 'w', encoding='utf-8') as txt_file:
+            txt_file.write(text)
+        
+        print(f"Extracted text saved to {txt_path}")
+        
+        # Analyze with DeepSeek if requested
+        if args.analyze:
+            analysis_file = os.path.join(output_dir, 
+                            os.path.splitext(os.path.basename(pdf_path))[0] + '_analysis.txt')
+            analyze_text_with_deepseek(text, analysis_file)
     
     # For a directory of PDFs
-    # process_pdf_directory("path/to/pdf/directory", "path/to/output/directory", poppler_path=poppler_path)
+    elif os.path.isdir(pdf_path):
+        print(f"Processing directory: {pdf_path}")
+        process_pdf_directory(pdf_path, args.output, poppler_path=poppler_path, analyze=args.analyze)
+    
+    else:
+        print(f"Error: {pdf_path} is not a valid file or directory")
