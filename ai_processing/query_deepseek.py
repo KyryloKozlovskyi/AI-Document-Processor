@@ -14,7 +14,7 @@ def query_deepseek(prompt):
     """
     client = OpenAI(
       base_url="https://openrouter.ai/api/v1",
-      api_key="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",
+      api_key="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",
     )
 
     completion = client.chat.completions.create(
