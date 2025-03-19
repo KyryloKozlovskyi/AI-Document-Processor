@@ -169,8 +169,7 @@ if __name__ == "__main__":
         
         # Analyze with DeepSeek if requested
         if args.analyze:
-            analysis_file = os.path.join(output_dir, 
-                            os.path.splitext(os.path.basename(pdf_path))[0] + '_analysis.txt')
+            analysis_file = os.path.join(output_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '_analysis.txt')
             analyze_text_with_deepseek(text, analysis_file)
     
     # For a directory of PDFs

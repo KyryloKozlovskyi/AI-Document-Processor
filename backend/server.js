@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { Resend } = require("resend");
+const {spawn} = require("child_process");
 
 const eventSchema = require("./models/Event");
 const submissionSchema = require("./models/Submission");
@@ -245,10 +246,10 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
       email,
       file: req.file
         ? {
-            data: req.file.buffer,
-            contentType: req.file.mimetype,
-            name: req.file.originalname,
-          }
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          name: req.file.originalname,
+        }
         : null,
     });
 
@@ -340,4 +341,78 @@ app.post("/api/auth/login", async (req, res) => {
 
 app.get("/api/auth/verify", auth, (req, res) => {
   res.status(200).json({ message: "Token is valid" });
+});
+
+app.get('/analyze/:submissionId', async (req, res) => {
+  try {
+    const submissionId = req.params.submissionId;
+    
+    // Retrieve the submission from the database
+    const submission = await submissionSchema.findById(submissionId);
+    if (!submission || !submission.file) {
+      return res.status(404).json({ message: "Submission or file not found" });
+    }
+    
+    // Create a temporary directory for processing
+    const tempDir = require('os').tmpdir();
+    const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
+    
+    // Write the file to disk
+    require('fs').writeFileSync(tempFilePath, submission.file.data);
+    
+    // Variable to store the data sent from Python
+    let dataToSend = '';
+    
+    // Spawn the Python process with the file path and analyze flag
+    const python = spawn('python', [
+      './ai_processing/processor.py',
+      '--pdf', tempFilePath,
+      '--analyze'
+    ]);
+    
+    // Collect data from script
+    python.stdout.on('data', function (data) {
+      console.log('Pipe data from python script ...');
+      dataToSend += data.toString();
+    });
+    
+    // Handle error output
+    python.stderr.on('data', function (data) {
+      console.error('Python error:', data.toString());
+    });
+    
+    // In close event we are sure that stream from child process is closed
+    python.on('close', (code) => {
+      console.log(`Python process closed with code ${code}`);
+      
+      // Clean up the temporary file
+      try {
+        require('fs').unlinkSync(tempFilePath);
+      } catch (err) {
+        console.error('Error deleting temp file:', err);
+      }
+      
+      // If process exited with error
+      if (code !== 0) {
+        return res.status(500).json({ 
+          message: "Error analyzing document",
+          details: dataToSend 
+        });
+      }
+      
+      // Extract the analysis part from the output
+      // The query_deepseek function outputs the model's response
+      let analysis = dataToSend;
+      
+      // Send data to browser
+      res.json({ 
+        submissionId,
+        filename: submission.file.name,
+        analysis
+      });
+    });
+  } catch (error) {
+    console.error('Error in analyze endpoint:', error);
+    res.status(500).json({ message: "Error processing analysis request", error: error.message });
+  }
 });
