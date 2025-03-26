@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Badge, Button, Form } from "react-bootstrap";
+import { Container, Table, Badge, Button, Form, Modal } from "react-bootstrap";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 
 const SeeRecords = () => {
   const [records, setRecords] = useState([]);
@@ -9,6 +10,11 @@ const SeeRecords = () => {
   const [filterBy, setFilterBy] = useState("date");
   const [events, setEvents] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(""); // State for selected course
+
+  // New state for analysis modal
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
+  const [analysisData, setAnalysisData] = useState(null);
+  const [analyzingDocument, setAnalyzingDocument] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -73,6 +79,36 @@ const SeeRecords = () => {
     }
   };
 
+  // Add a new function to handle document analysis
+  const analyzeDocument = async (id) => {
+    try {
+      setAnalyzingDocument(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`http://localhost:5000/analyze/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setAnalysisData(response.data);
+      setShowAnalysisModal(true);
+      setAnalyzingDocument(false);
+    } catch (err) {
+      console.error("Error analyzing document:", err);
+      setError(
+        "Failed to analyze document: " +
+          (err.response?.data?.message || err.message)
+      );
+      setAnalyzingDocument(false);
+    }
+  };
+
+  // Close modal function
+  const handleCloseModal = () => {
+    setShowAnalysisModal(false);
+    setAnalysisData(null);
+  };
+
   const filterRecords = (records, filterBy) => {
     const filteredRecords = [...records];
     switch (filterBy) {
@@ -85,8 +121,8 @@ const SeeRecords = () => {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
       case "eventId":
-        return filteredRecords.sort(
-          (a, b) => a.eventId.localeCompare(b.eventId)
+        return filteredRecords.sort((a, b) =>
+          a.eventId.localeCompare(b.eventId)
         );
       default:
         return filteredRecords;
@@ -95,7 +131,7 @@ const SeeRecords = () => {
 
   const filterByCourse = (records, selectedCourse) => {
     if (!selectedCourse) return records;
-    return records.filter(record => record.eventId === selectedCourse);
+    return records.filter((record) => record.eventId === selectedCourse);
   };
 
   if (loading) {
@@ -106,16 +142,17 @@ const SeeRecords = () => {
     return <Container className="text-danger">{error}</Container>;
   }
 
-  const filteredRecords = filterByCourse(filterRecords(records, filterBy), selectedCourse);
+  const filteredRecords = filterByCourse(
+    filterRecords(records, filterBy),
+    selectedCourse
+  );
 
   return (
     <Container>
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
         <div className="d-flex">
-          <Badge bg="primary m-2">
-            Records: {filteredRecords.length}
-          </Badge>
+          <Badge bg="primary m-2">Records: {filteredRecords.length}</Badge>
           <Form.Group style={{ width: "200px", marginRight: "10px" }}>
             <Form.Select
               value={filterBy}
@@ -152,6 +189,7 @@ const SeeRecords = () => {
             <th>File</th>
             <th>Submitted At</th>
             <th>Paid</th>
+            <th>Actions</th> {/* Add a new column for actions */}
           </tr>
         </thead>
         <tbody>
@@ -163,8 +201,10 @@ const SeeRecords = () => {
                 </Badge>
               </td>
               <td>
-                {events.find((event) => event._id === record.eventId)
-                  ?.courseName}
+                {
+                  events.find((event) => event._id === record.eventId)
+                    ?.courseName
+                }
               </td>
               <td>{record.name}</td>
               <td>{record.email}</td>
@@ -180,9 +220,7 @@ const SeeRecords = () => {
                   "No file"
                 )}
               </td>
-              <td>
-                {new Date(record.createdAt).toLocaleDateString()}
-              </td>
+              <td>{new Date(record.createdAt).toLocaleDateString()}</td>
               <td>
                 <Form.Check
                   type="checkbox"
@@ -201,9 +239,11 @@ const SeeRecords = () => {
                         { paid: !record.paid },
                         { headers: { Authorization: `Bearer ${token}` } }
                       );
-                      setRecords(records.map(r =>
-                        r._id === record._id ? { ...r, paid: !r.paid } : r
-                      ));
+                      setRecords(
+                        records.map((r) =>
+                          r._id === record._id ? { ...r, paid: !r.paid } : r
+                        )
+                      );
                     } catch (err) {
                       console.error("Error updating payment status:", err);
                     }
@@ -216,10 +256,62 @@ const SeeRecords = () => {
                   <Badge bg="danger">Not Paid</Badge>
                 )}
               </td>
+              <td>
+                {/* New column with analyze button - only show for records with files */}
+                {record.file && (
+                  <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => analyzeDocument(record._id)}
+                    disabled={analyzingDocument}
+                  >
+                    {analyzingDocument ? "Analyzing..." : "Analyze Document"}
+                  </Button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
+
+      {/* Analysis Results Modal */}
+      <Modal show={showAnalysisModal} onHide={handleCloseModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Document Analysis</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {analysisData ? (
+            <div>
+              <h5>Analysis for: {analysisData.filename}</h5>
+              {analysisData.analysis.includes("Local Analysis Mode") && (
+                <div className="alert alert-warning">
+                  <strong>Notice:</strong> This analysis was performed locally
+                  because no OpenAI API key is configured. For more detailed
+                  analysis, please set up an API key.
+                </div>
+              )}
+              <div
+                style={{
+                  maxHeight: "400px",
+                  overflow: "auto",
+                  padding: "15px",
+                  backgroundColor: "#f8f9fa",
+                  borderRadius: "5px",
+                }}
+              >
+                <ReactMarkdown>{analysisData.analysis}</ReactMarkdown>
+              </div>
+            </div>
+          ) : (
+            <p>No analysis data available</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
