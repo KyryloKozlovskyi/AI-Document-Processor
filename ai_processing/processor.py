@@ -1,7 +1,7 @@
 import os
-import pytesseract
 from pdf2image import convert_from_path
 from PIL import Image
+import pytesseract
 import tempfile
 import sys
 import argparse
@@ -116,9 +116,28 @@ def analyze_text_with_deepseek(text, output_file=None, prompt_prefix=""):
     else:
         analysis_text = text
         
-    # Create prompt
+    # Create prompt with improved instructions
     if not prompt_prefix:
-        prompt_prefix = "The following is text extracted from a PDF using OCR. Please summarize the key points and main ideas:"
+        prompt_prefix = """The following is text extracted from a PDF document using OCR. 
+Please analyze this document and provide a structured summary that includes:
+
+1. Document type and purpose
+2. Key information and data points
+3. Main findings or conclusions
+4. Any action items or next steps mentioned
+
+If the document appears to be a CV/resume, please summarize:
+- Professional background and experience
+- Skills and qualifications
+- Education
+- Key achievements
+
+If the document is a form or application:
+- What kind of form/application it is
+- Key information provided
+- Any missing or incomplete sections
+
+Please be concise but thorough in your analysis:"""
     
     prompt = f"{prompt_prefix}\n\n{analysis_text}"
     
@@ -141,6 +160,7 @@ if __name__ == "__main__":
     parser.add_argument("--pdf", "-p", type=str, help="Path to PDF file or directory")
     parser.add_argument("--output", "-o", type=str, help="Output directory for processed files")
     parser.add_argument("--analyze", "-a", action="store_true", help="Analyze extracted text with DeepSeek")
+    parser.add_argument("--direct-output", "-d", action="store_true", help="Output analysis directly to stdout without saving to file")
     parser.add_argument("--poppler", type=str, default=r"C:\Program Files\poppler-24.08.0\Library\bin",
                         help="Path to Poppler binaries")
     
@@ -155,22 +175,31 @@ if __name__ == "__main__":
         print(f"Processing single file: {pdf_path}")
         text = extract_text_from_pdf(pdf_path, poppler_path=poppler_path)
         
-        # Save to text file
-        output_dir = args.output if args.output else os.path.dirname(pdf_path)
-        os.makedirs(output_dir, exist_ok=True)
-        
-        txt_filename = os.path.splitext(os.path.basename(pdf_path))[0] + '.txt'
-        txt_path = os.path.join(output_dir, txt_filename)
-        
-        with open(txt_path, 'w', encoding='utf-8') as txt_file:
-            txt_file.write(text)
-        
-        print(f"Extracted text saved to {txt_path}")
+        # Save extracted text to file if not in direct output mode
+        if not args.direct_output:
+            output_dir = args.output if args.output else os.path.dirname(pdf_path)
+            os.makedirs(output_dir, exist_ok=True)
+            
+            txt_filename = os.path.splitext(os.path.basename(pdf_path))[0] + '.txt'
+            txt_path = os.path.join(output_dir, txt_filename)
+            
+            with open(txt_path, 'w', encoding='utf-8') as txt_file:
+                txt_file.write(text)
+            
+            print(f"Extracted text saved to {txt_path}")
         
         # Analyze with DeepSeek if requested
-        if args.analyze:
-            analysis_file = os.path.join(output_dir, os.path.splitext(os.path.basename(pdf_path))[0] + '_analysis.txt')
-            analyze_text_with_deepseek(text, analysis_file)
+        if args.analyze or args.direct_output:
+            if args.direct_output:
+                # Output directly to stdout instead of saving to file
+                analysis = analyze_text_with_deepseek(text)
+                print(analysis)  # This will be captured by the Node.js process
+            else:
+                analysis_file = os.path.join(
+                    args.output if args.output else os.path.dirname(pdf_path), 
+                    os.path.splitext(os.path.basename(pdf_path))[0] + '_analysis.txt'
+                )
+                analyze_text_with_deepseek(text, analysis_file)
     
     # For a directory of PDFs
     elif os.path.isdir(pdf_path):
