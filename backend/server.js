@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { Resend } = require("resend");
-const {spawn} = require("child_process");
+const { spawn } = require("child_process");
 
 const eventSchema = require("./models/Event");
 const submissionSchema = require("./models/Submission");
@@ -55,6 +55,91 @@ mongoose
 // Configure Multer for handling file uploads in memory
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+// Update the path in your analyze endpoint (there are two copies in your file)
+app.get("/analyze/:submissionId", auth, async (req, res) => {
+  try {
+    const submissionId = req.params.submissionId;
+
+    // Retrieve the submission from the database
+    const submission = await submissionSchema.findById(submissionId);
+    if (!submission || !submission.file) {
+      return res.status(404).json({ message: "Submission or file not found" });
+    }
+
+    // Create a temporary directory for processing
+    const tempDir = require("os").tmpdir();
+    const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
+
+    // Write the file to disk
+    require("fs").writeFileSync(tempFilePath, submission.file.data);
+
+    // Variable to store the data sent from Python
+    let dataToSend = "";
+
+    // Fix the path to the Python script - use path.resolve for reliability
+    const path = require("path");
+    const scriptPath = path.resolve(
+      __dirname,
+      "..",
+      "ai_processing",
+      "processor.py"
+    );
+
+    // Spawn the Python process with the file path but don't use --analyze flag
+    // This will make it analyze without saving to a file
+    const python = spawn("python", [
+      scriptPath,
+      "--pdf",
+      tempFilePath,
+      "--direct-output", // Add a new flag to indicate direct output mode
+    ]);
+
+    // Collect data from script
+    python.stdout.on("data", function (data) {
+      console.log("Pipe data from python script ...");
+      dataToSend += data.toString();
+    });
+
+    // Handle error output
+    python.stderr.on("data", function (data) {
+      console.error("Python error:", data.toString());
+    });
+
+    // In close event we are sure that stream from child process is closed
+    python.on("close", (code) => {
+      console.log(`Python process closed with code ${code}`);
+
+      // Clean up the temporary file
+      try {
+        require("fs").unlinkSync(tempFilePath);
+      } catch (err) {
+        console.error("Error deleting temp file:", err);
+      }
+
+      // If process exited with error
+      if (code !== 0) {
+        return res.status(500).json({
+          message: "Error analyzing document",
+          details: dataToSend,
+        });
+      }
+
+      // Send data to browser
+      res.json({
+        submissionId,
+        filename: submission.file.name,
+        analysis: dataToSend,
+      });
+    });
+  } catch (error) {
+    console.error("Error in analyze endpoint:", error);
+    res.status(500).json({
+      message: "Error processing analysis request",
+      error: error.message,
+    });
+  }
+});
 
 // get a locally stored pdf file
 app.get("/companyform", (req, res) => {
@@ -246,10 +331,10 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
       email,
       file: req.file
         ? {
-          data: req.file.buffer,
-          contentType: req.file.mimetype,
-          name: req.file.originalname,
-        }
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+            name: req.file.originalname,
+          }
         : null,
     });
 
@@ -343,76 +428,59 @@ app.get("/api/auth/verify", auth, (req, res) => {
   res.status(200).json({ message: "Token is valid" });
 });
 
-app.get('/analyze/:submissionId', async (req, res) => {
+// Add this endpoint after your other endpoints
+
+// Endpoint to check Python environment
+app.get("/api/check-python", auth, async (req, res) => {
   try {
-    const submissionId = req.params.submissionId;
-    
-    // Retrieve the submission from the database
-    const submission = await submissionSchema.findById(submissionId);
-    if (!submission || !submission.file) {
-      return res.status(404).json({ message: "Submission or file not found" });
-    }
-    
-    // Create a temporary directory for processing
-    const tempDir = require('os').tmpdir();
-    const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
-    
-    // Write the file to disk
-    require('fs').writeFileSync(tempFilePath, submission.file.data);
-    
-    // Variable to store the data sent from Python
-    let dataToSend = '';
-    
-    // Spawn the Python process with the file path and analyze flag
-    const python = spawn('python', [
-      './ai_processing/processor.py',
-      '--pdf', tempFilePath,
-      '--analyze'
-    ]);
-    
-    // Collect data from script
-    python.stdout.on('data', function (data) {
-      console.log('Pipe data from python script ...');
+    const path = require("path");
+    const scriptPath = path.resolve(
+      __dirname,
+      "..",
+      "ai_processing",
+      "check_environment.py"
+    );
+
+    let dataToSend = "";
+
+    const python = spawn("python", [scriptPath]);
+
+    python.stdout.on("data", function (data) {
       dataToSend += data.toString();
     });
-    
-    // Handle error output
-    python.stderr.on('data', function (data) {
-      console.error('Python error:', data.toString());
+
+    python.stderr.on("data", function (data) {
+      console.error("Python error:", data.toString());
+      dataToSend += "ERROR: " + data.toString();
     });
-    
-    // In close event we are sure that stream from child process is closed
-    python.on('close', (code) => {
-      console.log(`Python process closed with code ${code}`);
-      
-      // Clean up the temporary file
-      try {
-        require('fs').unlinkSync(tempFilePath);
-      } catch (err) {
-        console.error('Error deleting temp file:', err);
-      }
-      
-      // If process exited with error
-      if (code !== 0) {
-        return res.status(500).json({ 
-          message: "Error analyzing document",
-          details: dataToSend 
-        });
-      }
-      
-      // Extract the analysis part from the output
-      // The query_deepseek function outputs the model's response
-      let analysis = dataToSend;
-      
-      // Send data to browser
-      res.json({ 
-        submissionId,
-        filename: submission.file.name,
-        analysis
+
+    python.on("close", (code) => {
+      console.log(`Python environment check process closed with code ${code}`);
+
+      // Check if OpenRouter API key is set
+      const openrouter_api_key = process.env.OPENROUTER_API_KEY;
+      const api_status =
+        openrouter_api_key &&
+        openrouter_api_key !== "your_openrouter_api_key_here"
+          ? "✅ OpenRouter API key is configured"
+          : "⚠️ OpenRouter API key is not configured. Local analysis will be used.";
+
+      dataToSend += "\n\nAPI Status:\n" + api_status;
+
+      res.json({
+        success: code === 0,
+        output: dataToSend,
+        exitCode: code,
+        api_configured:
+          openrouter_api_key &&
+          openrouter_api_key !== "your_openrouter_api_key_here",
       });
     });
   } catch (error) {
-    console.error('Error in analyze endpoint:', error);
-    res.status(500).json({ message: "Error processing analysis request", error: error.message });
+    console.error("Error checking Python environment:", error);
+    res.status(500).json({
+      message: "Error checking Python environment",
+      error: error.message,
+    });
   }
 });
