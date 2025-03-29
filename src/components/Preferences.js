@@ -21,31 +21,38 @@ const Preferences = () => {
             [name]: newValue,
         });
         
-        // If theme is changed, update the context too
+        // If theme is changed, update the context
         if (name === 'theme') {
             setTheme(value);
         }
     };
 
     const handleSave = () => {
-        // Save preferences to local storage
+        // For any other preferences besides theme
+        // Theme is already saved by the ThemeContext
         localStorage.setItem('userPreferences', JSON.stringify(preferences));
-        alert('Preferences saved!');
+        alert('Preferences saved successfully!');
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Preferences</h2>
-            <div style={{ marginBottom: '10px' }}>
-                <label>
-                    Theme:
-                    <select name="theme" value={preferences.theme} onChange={handleChange}>
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </label>
+        <div className="preferences-container">
+            <h2>User Preferences</h2>
+            <div className="theme-selector">
+                <label htmlFor="theme-select">Theme:</label>
+                <select 
+                    id="theme-select"
+                    name="theme" 
+                    value={preferences.theme} 
+                    onChange={handleChange}
+                >
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                </select>
             </div>
-            <button onClick={handleSave}>Save Preferences</button>
+            <p>Current theme: <strong>{preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}</strong></p>
+            <button className="save-button" onClick={handleSave}>
+                Save All Preferences
+            </button>
         </div>
     );
 };

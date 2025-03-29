@@ -1,5 +1,49 @@
-body {
+:root {
+  /* Light theme variables */
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #0275d8;
+  --secondary-color: #6c757d;
+  --accent-color: #5bc0de;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --input-bg: #f8f9fa;
+  --input-text: #495057;
+  --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --hover-bg: #f2f2f2;
+  --navbar-bg: #f8f9fa;
+  --navbar-text: #212529;
+  --btn-primary-bg: #0275d8;
+  --btn-primary-text: #ffffff;
+}
+
+body[data-theme='dark'] {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #90caf9;
+  --secondary-color: #a0a0a0;
+  --accent-color: #4dc4ff;
+  --border-color: #444444;
+  --card-bg: #1e1e1e;
+  --input-bg: #2a2a2a;
+  --input-text: #ffffff;
+  --shadow: 0 0.125rem 0.25rem rgba(255, 255, 255, 0.05);
+  --hover-bg: #2c2c2c;
+  --navbar-bg: #1e1e1e;
+  --navbar-text: #ffffff;
+  --btn-primary-bg: #0d6efd;
+  --btn-primary-text: #ffffff;
+}
+
+/* Apply theme to html and body for app-wide theme */
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -7,7 +51,120 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Footer specific styling */
+.app-footer {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+  padding: 1rem 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Apply theme to root container */
+#root {
+  min-height: 100%;
+  background-color: var(--bg-color);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  color: var(--text-color);
+}
+
+/* Global element styling */
+button {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+input, select, textarea {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--border-color);
+}
+
+a {
+  color: var(--primary-color);
+}
+
+/* Style for cards, containers, etc. */
+.card, .container, .list-group-item, div[class^="container"] {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+/* Navbar styling */
+.navbar, .navbar-light, .bg-light {
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-text) !important;
+}
+
+/* Bootstrap overrides */
+.btn-primary {
+  background-color: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+}
+
+.table {
+  color: var(--text-color) !important;
+}
+
+/* Override Bootstrap background classes */
+.bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+.bg-light {
+  background-color: var(--card-bg) !important;
+}
+
+/* Bootstrap background overrides - expanded */
+.bg-body-tertiary,
+.bg-light,
+.bg-white,
+.bg-body,
+.bg-body-secondary {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+/* Make sure modals and dialogs use theme colors */
+.modal, .modal-content, .dropdown-menu {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Add specific styles for paragraph text to ensure readability */
+p, span, div, li, td, th, label, input, select, textarea {
+  color: var(--text-color);
+}
+
+/* Ensure links have good contrast in dark mode */
+body[data-theme='dark'] a:not(.btn) {
+  color: #4dabff;
+}
+
+/* Ensure headings have good contrast */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+}
+
+/* Improve contrast for form elements in dark mode */
+body[data-theme='dark'] input, 
+body[data-theme='dark'] select, 
+body[data-theme='dark'] textarea {
+  background-color: #333333;
+  color: #ffffff;
+  border-color: #555555;
+}
+
+/* Improve contrast for Bootstrap elements in dark mode */
+body[data-theme='dark'] .card,
+body[data-theme='dark'] .navbar,
+body[data-theme='dark'] .list-group-item {
+  background-color: #282828;
 }

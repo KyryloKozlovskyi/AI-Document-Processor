@@ -8,8 +8,7 @@ const NavigationBar = () => {
 
   return (
     <Navbar bg="primary" data-bs-theme="dark">
-      <Container>
-        <Navbar.Brand href="/">Navbar</Navbar.Brand>
+        <Navbar.Brand className="p-2" href="/">Navbar</Navbar.Brand>
         <Nav className="me-auto">
           <Nav.Link href="/">Home</Nav.Link>
           <Nav.Link href="/about">About</Nav.Link>
@@ -23,10 +22,9 @@ const NavigationBar = () => {
               <Nav.Link onClick={logout}>Logout</Nav.Link>
             </>
           ) : (
-            <Nav.Link href="/login">Login</Nav.Link>
+            <Nav.Link className="p-2" href="/login">Login</Nav.Link>
           )}
         </Nav>
-      </Container>
     </Navbar>
   );
 };
