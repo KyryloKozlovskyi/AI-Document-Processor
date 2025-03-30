@@ -57,7 +57,7 @@ const EventUpdate = () => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="root-container">
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       <Form onSubmit={handleSubmit} className="card p-4 shadow-sm">

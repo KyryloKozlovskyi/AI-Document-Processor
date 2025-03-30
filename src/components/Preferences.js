@@ -35,14 +35,13 @@ const Preferences = () => {
     };
 
     return (
-        <div className="preferences-container card">
+        <div class='root-container'>
             <h2 className="page-title">User Preferences</h2>
             <div className="preferences-content">
                 <div className="preference-section">
                     <div className="form-group">
                         <label htmlFor="theme-select">Theme:</label>
                         <select 
-                            id="theme-select"
                             name="theme" 
                             value={preferences.theme} 
                             onChange={handleChange}

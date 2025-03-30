@@ -33,7 +33,7 @@ const Login = () => {
   };
 
   return (
-    <Container className="mt-5">
+    <Container className="root-container">
       <h2>Admin Login</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>

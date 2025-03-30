@@ -15,7 +15,7 @@ const Events = (props) => {
 
   // Maps the event objects to EventItem components
   return (
-    <div className="container mt-5">
+    <div className="root-container">
       <Row className="g-6">
         {props.myEvents.map((event) => (
           <EventItem 

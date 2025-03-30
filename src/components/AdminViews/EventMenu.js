@@ -32,7 +32,7 @@ const EventMenu = () => {
 
   return (
     // return event list
-    <div>
+    <div className="root-container" >
       {/* display events */}
       <Events myEvents={events} ReloadData={Reload} />
     </div>

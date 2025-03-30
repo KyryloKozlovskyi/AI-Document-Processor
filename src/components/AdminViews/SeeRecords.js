@@ -135,11 +135,11 @@ const SeeRecords = () => {
   };
 
   if (loading) {
-    return <Container>Loading...</Container>;
+    return <Container className="root-container" >Loading...</Container>;
   }
 
   if (error) {
-    return <Container className="text-danger">{error}</Container>;
+    return <Container className="text-danger root-container" >{error}</Container>;
   }
 
   const filteredRecords = filterByCourse(
@@ -148,7 +148,7 @@ const SeeRecords = () => {
   );
 
   return (
-    <Container>
+    <Container className="root-container">
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
         <div className="d-flex">

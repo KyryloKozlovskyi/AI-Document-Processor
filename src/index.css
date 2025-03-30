@@ -168,3 +168,15 @@ body[data-theme='dark'] .navbar,
 body[data-theme='dark'] .list-group-item {
   background-color: #282828;
 }
+
+/* Style for Root Container */
+.root-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80vh;
+  min-width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

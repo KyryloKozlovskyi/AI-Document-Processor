@@ -60,12 +60,12 @@
 }
 
 .theme-selector select {
-  margin-left: 10px;
   padding: 8px 12px;
   background-color: var(--input-bg);
   color: var(--input-text);
   border: 1px solid var(--border-color);
   border-radius: 4px;
+  width: 80%;
 }
 
 .save-button {
