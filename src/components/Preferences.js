@@ -35,24 +35,40 @@ const Preferences = () => {
     };
 
     return (
-        <div className="preferences-container">
-            <h2>User Preferences</h2>
-            <div className="theme-selector">
-                <label htmlFor="theme-select">Theme:</label>
-                <select 
-                    id="theme-select"
-                    name="theme" 
-                    value={preferences.theme} 
-                    onChange={handleChange}
-                >
-                    <option value="light">Light Mode</option>
-                    <option value="dark">Dark Mode</option>
-                </select>
+        <div className="preferences-container card">
+            <h2 className="page-title">User Preferences</h2>
+            <div className="preferences-content">
+                <div className="preference-section">
+                    <div className="form-group">
+                        <label htmlFor="theme-select">Theme:</label>
+                        <select 
+                            id="theme-select"
+                            name="theme" 
+                            value={preferences.theme} 
+                            onChange={handleChange}
+                            className="form-control"
+                        >
+                            <option value="light">Light Mode</option>
+                            <option value="dark">Dark Mode</option>
+                        </select>
+                    </div>
+                    <div className="theme-display">
+                        <span>Current theme: </span>
+                        <span className={`theme-badge ${preferences.theme}`}>
+                            {preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}
+                        </span>
+                    </div>
+                </div>
+                
+                <div className="preferences-actions">
+                    <button 
+                        className="btn btn-primary save-button" 
+                        onClick={handleSave}
+                    >
+                        Save All Preferences
+                    </button>
+                </div>
             </div>
-            <p>Current theme: <strong>{preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}</strong></p>
-            <button className="save-button" onClick={handleSave}>
-                Save All Preferences
-            </button>
         </div>
     );
 };

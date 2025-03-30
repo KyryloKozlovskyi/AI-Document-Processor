@@ -1,0 +1,104 @@
+.preferences-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--card-bg, #ffffff);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.preferences-container .page-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-primary, #333);
+    border-bottom: 1px solid var(--border-color, #eee);
+    padding-bottom: 15px;
+}
+
+.preferences-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.preference-section {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    min-width: 120px;
+    font-weight: 500;
+    color: var(--text-secondary, #555);
+}
+
+.form-control {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 4px;
+    background-color: var(--input-bg, #fff);
+    color: var(--text-primary, #333);
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color, #4a6da7);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 109, 167, 0.1);
+}
+
+.theme-display {
+    margin-top: 15px;
+    color: var(--text-secondary, #666);
+}
+
+.theme-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.theme-badge.light {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.theme-badge.dark {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #222;
+}
+
+.preferences-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color, #4a6da7);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover, #3a5a8a);
+}
