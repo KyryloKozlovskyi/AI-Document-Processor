@@ -171,12 +171,25 @@ body[data-theme='dark'] .list-group-item {
 
 /* Style for Root Container */
 .root-container {
-  display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 80vh;
   min-width: 100%;
   background-color: var(--bg-color);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.submit-form {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  margin: 20px auto;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
