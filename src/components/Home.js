@@ -20,6 +20,10 @@ const Home = () => {
         <p>To get started, navigate to the Submit page to upload your documents.</p>
         <p>If you are an admin, you can access the admin panel for additional features.</p>
       </div>
+
+      <button className="btn btn-primary" onClick={() => window.location.href = '/submit'}>
+        Submit a Form
+      </button>
     </div>
   );
 };

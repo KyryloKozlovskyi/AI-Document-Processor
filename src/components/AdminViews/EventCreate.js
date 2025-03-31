@@ -40,6 +40,7 @@ const EventCreate = () => {
 
     return (
         <div className="container mt-4">
+            <h2>Create New Event</h2>
             <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
                 <div className="mb-3">
                     <label className="form-label">Course Name:</label>
@@ -70,6 +71,7 @@ const EventCreate = () => {
                         className="form-control" 
                         name="date" 
                         value={formData.date} 
+                        min={new Date().toISOString().split('T')[0]} // Ensure the date is not in the past
                         onChange={handleChange} 
                         required 
                     />
