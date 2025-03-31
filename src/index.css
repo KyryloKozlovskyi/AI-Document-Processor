@@ -36,7 +36,8 @@ body[data-theme='dark'] {
 }
 
 /* Apply theme to html and body for app-wide theme */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -80,7 +81,9 @@ button {
   transition: all 0.2s;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   background-color: var(--input-bg);
   color: var(--input-text);
   border: 1px solid var(--border-color);
@@ -91,14 +94,19 @@ a {
 }
 
 /* Style for cards, containers, etc. */
-.card, .container, .list-group-item, div[class^="container"] {
+.card,
+.container,
+.list-group-item,
+div[class^="container"] {
   background-color: var(--card-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
 }
 
 /* Navbar styling */
-.navbar, .navbar-light, .bg-light {
+.navbar,
+.navbar-light,
+.bg-light {
   background-color: var(--navbar-bg) !important;
   color: var(--navbar-text) !important;
 }
@@ -133,13 +141,24 @@ a {
 }
 
 /* Make sure modals and dialogs use theme colors */
-.modal, .modal-content, .dropdown-menu {
+.modal,
+.modal-content,
+.dropdown-menu {
   background-color: var(--card-bg);
   color: var(--text-color);
 }
 
 /* Add specific styles for paragraph text to ensure readability */
-p, span, div, li, td, th, label, input, select, textarea {
+p,
+span,
+div,
+li,
+td,
+th,
+label,
+input,
+select,
+textarea {
   color: var(--text-color);
 }
 
@@ -149,13 +168,18 @@ body[data-theme='dark'] a:not(.btn) {
 }
 
 /* Ensure headings have good contrast */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-color);
 }
 
 /* Improve contrast for form elements in dark mode */
-body[data-theme='dark'] input, 
-body[data-theme='dark'] select, 
+body[data-theme='dark'] input,
+body[data-theme='dark'] select,
 body[data-theme='dark'] textarea {
   background-color: #333333;
   color: #ffffff;
@@ -167,6 +191,93 @@ body[data-theme='dark'] .card,
 body[data-theme='dark'] .navbar,
 body[data-theme='dark'] .list-group-item {
   background-color: #282828;
+}
+
+/* ReactMarkdown styling - consistent across all themes */
+.react-markdown,
+.markdown-content {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* Ensure all elements inside ReactMarkdown have black text */
+.react-markdown *,
+.markdown-content * {
+  color: #000000 !important;
+}
+
+.react-markdown h1,
+.react-markdown h2,
+.react-markdown h3,
+.react-markdown h4,
+.react-markdown h5,
+.react-markdown h6,
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  color: #000000 !important;
+}
+
+.react-markdown p,
+.react-markdown span,
+.react-markdown li,
+.react-markdown a,
+.markdown-content p,
+.markdown-content span,
+.markdown-content li,
+.markdown-content a {
+  color: #000000 !important;
+}
+
+.react-markdown code,
+.markdown-content code {
+  background-color: #f0f0f0 !important;
+  color: #000000 !important;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.react-markdown pre,
+.markdown-content pre {
+  background-color: #f0f0f0 !important;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.react-markdown pre code,
+.markdown-content pre code {
+  color: #000000 !important;
+}
+
+/* Remove the theme-specific rule and replace with a universal one */
+body[data-theme='dark'] .react-markdown {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.analysis-modal {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-radius: 8px;
+  margin: 20px auto;
+  padding: 15px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.analysis-modal-body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-radius: 5px;
+  padding: 15px;
+  max-height: 400px;
+  overflow: auto;
 }
 
 /* Style for Root Container */
@@ -191,5 +302,28 @@ body[data-theme='dark'] .list-group-item {
   border-radius: 8px;
   box-shadow: var(--shadow);
   margin: 20px auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.analysis-modal {
+  color: #000000;
+  border-radius: 8px;
+  color: #000000;
+  margin: 20px auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  max-height: "400px";
+  overflow: "auto";
+  padding: "15px";
+  background-color: "#f8f9fa";
+  border-radius: "5px";
+}
+
+.analysis-modal-body {
+  color: #000000;
+  background-color: "#f8f9fa";
+  border-radius: "5px";
+  padding: "15px";
+  max-height: "400px";
+  overflow: "auto";
   transition: background-color 0.3s ease, color 0.3s ease;
 }

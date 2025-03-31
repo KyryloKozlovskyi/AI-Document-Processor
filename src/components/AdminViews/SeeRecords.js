@@ -281,7 +281,7 @@ const SeeRecords = () => {
         </Modal.Header>
         <Modal.Body>
           {analysisData ? (
-            <div>
+            <div className="analysis-modal">
               <h5>Analysis for: {analysisData.filename}</h5>
               {analysisData.analysis.includes("Local Analysis Mode") && (
                 <div className="alert alert-warning">
@@ -290,15 +290,10 @@ const SeeRecords = () => {
                   analysis, please set up an API key.
                 </div>
               )}
-              <div
-                style={{
-                  maxHeight: "400px",
-                  overflow: "auto",
-                  padding: "15px",
-                  backgroundColor: "#f8f9fa",
-                  borderRadius: "5px",
-                }}
-              >
+              <div>
+                <div className="markdown-content">
+                  <ReactMarkdown>{analysisData.analysis}</ReactMarkdown>
+                </div>
                 <ReactMarkdown>{analysisData.analysis}</ReactMarkdown>
               </div>
             </div>

@@ -9,7 +9,7 @@ from openai import OpenAI
 load_dotenv()
 
 # Get API key from environment variable or use a default one for testing
-api_key = os.getenv("OPENROUTER_API_KEY", "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")
+api_key = os.getenv("OPENROUTER_API_KEY", "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")
 
 def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     """
