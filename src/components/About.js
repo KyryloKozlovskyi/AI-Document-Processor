@@ -4,7 +4,9 @@ const About = () => {
   return (
     <div className="root-container">
       <h1>About us</h1>
-      <p>Welcome to our website. Here is some information about us.</p>
+      <p>Made by Fionn McCarthy and Kyrylo Kozlovskyi</p>
+      <p>We are students at ATU Galway.</p>
+      <p>This is our 3rd Year final project.</p>
     </div>
   );
 };
