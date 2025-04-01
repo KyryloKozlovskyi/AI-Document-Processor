@@ -2,14 +2,34 @@ import os
 import sys
 import json
 import argparse
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from openai import OpenAI
 
-# Load environment variables from .env file
-load_dotenv()
+# Find .env file and load environment variables
+print(f"Current working directory: {os.getcwd()}")
+dotenv_path = "../backend/.env"
+print(f"Searching for .env file in: {dotenv_path}")
+if dotenv_path:
+    print(f"Found .env at: {dotenv_path}")
+    load_dotenv(dotenv_path)
+else:
+    # If not found, try explicit path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    dotenv_path = os.path.join(project_root, '.env')
+    print(f"Trying explicit path: {dotenv_path}")
+    if os.path.exists(dotenv_path):
+        load_dotenv(dotenv_path)
+        print(f"Loaded .env from: {dotenv_path}")
+    else:
+        print(f"Warning: No .env file found!")
 
 # Get API key from environment variable
 api_key = os.getenv("OPENROUTER_API_KEY", None)
+print(f"API key loaded: {'Yes' if api_key else 'No'}")
+if api_key:
+    # Print just the first few and last few characters for security
+    print(f"API key starts with {api_key[:5]}... ends with ...{api_key[-5:]}")
 
 def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     """
