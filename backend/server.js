@@ -252,7 +252,7 @@ app.delete("/api/events/:id", async (req, res) => {
   }
 });
 
-// get event by id
+// Get event by id
 app.get("/api/events/:id", async (req, res) => {
   try {
     const event = await eventSchema.findById(req.params.id);
@@ -324,6 +324,7 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
     if (!email.includes("@") || !email.includes(".")) {
       return res.status(400).json({ message: "Invalid email address" });
     }
+
     const submission = new submissionSchema({
       eventId,
       type,
@@ -340,12 +341,22 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
 
     await submission.save();
 
+    var emailText = "";
+
+    // Get email text associated with the event from MongoDB
+    try {
+      const event = await eventSchema.findById(eventId);
+      emailText = event.emailText;
+    } catch (error) {
+      console.error("Error fetching event emailText:", error);
+    }
+
     // Send confirmation email
     await resend.emails.send({
       from: process.env.RESEND_DOMAIN,
       to: email,
       subject: "Submission Confirmation",
-      text: `Dear ${name},\n\nThank you for your submission. We have received your ${type} submission successfully.\n\nBest regards,\nYour Company`,
+      text: emailText,
     });
 
     res.status(201).json({
