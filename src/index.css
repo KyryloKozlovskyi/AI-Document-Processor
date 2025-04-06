@@ -103,6 +103,16 @@ div[class^="container"] {
   border: 1px solid var(--border-color);
 }
 
+/* Add styles for card titles to change color based on theme */
+.card-title {
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+body[data-theme='dark'] .card-title {
+  color: var(--primary-color);
+}
+
 /* Navbar styling */
 .navbar,
 .navbar-light,
@@ -326,5 +336,15 @@ body[data-theme='dark'] .react-markdown {
   padding: "15px";
   max-height: "400px";
   overflow: "auto";
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
 }

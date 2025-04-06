@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Badge, Button, Form, Modal } from "react-bootstrap";
+import { Container, Table, Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
@@ -93,11 +93,12 @@ const SeeRecords = () => {
       setAnalysisData(response.data);
       setShowAnalysisModal(true);
       setAnalyzingDocument(false);
+
     } catch (err) {
       console.error("Error analyzing document:", err);
       setError(
         "Failed to analyze document: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
       setAnalyzingDocument(false);
     }
@@ -135,7 +136,14 @@ const SeeRecords = () => {
   };
 
   if (loading) {
-    return <Container className="root-container" >Loading...</Container>;
+    return <Container className="root-container loading-spinner" >
+      {/* Loading Spinner Popup */}
+      <div className="loading-overlay">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    </Container>;
   }
 
   if (error) {
@@ -149,6 +157,7 @@ const SeeRecords = () => {
 
   return (
     <Container className="root-container">
+
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
         <div className="d-flex">

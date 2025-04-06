@@ -2,27 +2,11 @@ import os
 import sys
 import json
 import argparse
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 from openai import OpenAI
 
 # Find .env file and load environment variables
-print(f"Current working directory: {os.getcwd()}")
-dotenv_path = "../backend/.env"
-print(f"Searching for .env file in: {dotenv_path}")
-if dotenv_path:
-    print(f"Found .env at: {dotenv_path}")
-    load_dotenv(dotenv_path)
-else:
-    # If not found, try explicit path
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)
-    dotenv_path = os.path.join(project_root, '.env')
-    print(f"Trying explicit path: {dotenv_path}")
-    if os.path.exists(dotenv_path):
-        load_dotenv(dotenv_path)
-        print(f"Loaded .env from: {dotenv_path}")
-    else:
-        print(f"Warning: No .env file found!")
+load_dotenv()
 
 # Get API key from environment variable
 api_key = os.getenv("OPENROUTER_API_KEY", None)
@@ -44,11 +28,12 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     """
     try:
         # If we don't have an API key, use our fallback
+        print(f"Api_key: {api_key}")
         if not api_key:
             print("No OpenRouter API key found. Using fallback analysis.")
             return fallback_analysis(prompt)
         
-        # Initialize the OpenAI client with OpenRouter base URL
+        # Initialise the OpenAI client with OpenRouter base URL
         client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=api_key,

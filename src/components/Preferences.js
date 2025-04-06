@@ -27,13 +27,6 @@ const Preferences = () => {
         }
     };
 
-    const handleSave = () => {
-        // For any other preferences besides theme
-        // Theme is already saved by the ThemeContext
-        localStorage.setItem('userPreferences', JSON.stringify(preferences));
-        alert('Preferences saved successfully!');
-    };
-
     return (
         <div class='root-container'>
             <h2 className="page-title">User Preferences</h2>
@@ -51,21 +44,7 @@ const Preferences = () => {
                             <option value="dark">Dark Mode</option>
                         </select>
                     </div>
-                    <div className="theme-display">
-                        <span>Current theme: </span>
-                        <span className={`theme-badge ${preferences.theme}`}>
-                            {preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}
-                        </span>
-                    </div>
-                </div>
-                
-                <div className="preferences-actions">
-                    <button 
-                        className="btn btn-primary save-button" 
-                        onClick={handleSave}
-                    >
-                        Save All Preferences
-                    </button>
+                    
                 </div>
             </div>
         </div>
