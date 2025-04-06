@@ -136,18 +136,6 @@ const SeeRecords = () => {
     return records.filter((record) => record.eventId === selectedCourse);
   };
 
-  if (loading) {
-    return <Container className="root-container loading-spinner" >
-      {/* Loading Spinner Popup */}
-      <div className="loading-overlay">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </div>
-      <div className="loading-text">Loading records...</div>
-    </Container>;
-  }
-
   if (error) {
     return <Container className="text-danger root-container" >{error}</Container>;
   }
@@ -160,8 +148,15 @@ const SeeRecords = () => {
   return (
     <Container className="root-container">
 
-      <ChatPanel /> {/* Include the ChatPanel component here */}
+      <ChatPanel />
 
+      {analyzingDocument || loading ? (
+        <div className="loading-overlay">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Analyzing...</span>
+            </Spinner>
+            </div>
+            ) : null}
 
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>

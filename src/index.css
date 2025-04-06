@@ -117,6 +117,7 @@ body[data-theme='dark'] .card-title {
 .navbar,
 .navbar-light,
 .bg-light {
+  z-index: 1000;
   background-color: var(--navbar-bg) !important;
   color: var(--navbar-text) !important;
 }
@@ -339,12 +340,18 @@ body[data-theme='dark'] .react-markdown {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.loading-spinner {
+/* Loading overlay goes over the entire page */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: var(--bg-color);
+  background-color: rgba(255, 255, 255, 0.8);
   color: var(--text-color);
+  z-index: 900; /* Ensure it overlays all other elements */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
