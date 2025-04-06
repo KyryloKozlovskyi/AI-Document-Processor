@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import ChatPanel from "./ChatPanel"; // Import the ChatPanel component
 
 const SeeRecords = () => {
   const [records, setRecords] = useState([]);
@@ -158,6 +159,9 @@ const SeeRecords = () => {
 
   return (
     <Container className="root-container">
+
+      <ChatPanel /> {/* Include the ChatPanel component here */}
+
 
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>

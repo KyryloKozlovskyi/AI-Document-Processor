@@ -1,0 +1,41 @@
+/* ChatPanel.css */
+
+.chat-panel-container {
+    position: relative;
+}
+
+.toggle-button {
+    position: fixed;
+    top: 100px;
+    right: -1%;
+    z-index: 1000;
+    padding: 10px 20px;
+    background-color: #007bff;
+    transition: right 0.3s ease;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.side-panel {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: -50%;
+    width: 50%;
+    height: 100%;
+    background-color: #f4f4f4;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.side-panel.open {
+    right: 0;
+}
+
+.toggle-button.open {
+    right: 49%;
+}
