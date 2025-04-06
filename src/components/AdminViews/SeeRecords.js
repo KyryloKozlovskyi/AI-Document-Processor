@@ -143,6 +143,7 @@ const SeeRecords = () => {
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       </div>
+      <div className="loading-text">Loading records...</div>
     </Container>;
   }
 
