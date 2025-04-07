@@ -141,6 +141,68 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
   }
 });
 
+// Endpoint to query the AI model
+app.get("/query/:query", auth, async (req, res) => {
+  try {
+    const query = req.params.query;
+
+    // Variable to store the data sent from Python
+    let dataToSend = "";
+
+    // Use path.resolve for reliable path resolution
+    const path = require("path");
+    const scriptPath = path.resolve(
+      __dirname,
+      "..",
+      "ai_processing",
+      "query.py"
+    );
+
+    // Spawn the Python process with the query
+    const python = spawn("python", [
+      scriptPath,
+      "--query",
+      query
+    ]);
+
+    // Collect data from script
+    python.stdout.on("data", function (data) {
+      console.log("Pipe data from python script ...");
+      dataToSend += data.toString();
+    });
+
+    // Handle error output
+    python.stderr.on("data", function (data) {
+      console.error("Python error:", data.toString());
+    });
+
+    // In close event we are sure that stream from child process is closed
+    python.on("close", (code) => {
+      console.log(`Python process closed with code ${code}`);
+
+      // If process exited with error
+      if (code !== 0) {
+        return res.status(500).json({
+          message: "Error querying AI model",
+          details: dataToSend,
+        });
+      }
+
+      // Send data to browser
+      res.json({
+        query,
+        response: dataToSend,
+      });
+    });
+  } catch (error) {
+    console.error("Error in query endpoint:", error);
+    res.status(500).json({
+      message: "Error processing query request",
+      error: error.message,
+    });
+  }
+});
+
 // get a locally stored pdf file
 app.get("/companyform", (req, res) => {
   console.log(__dirname);

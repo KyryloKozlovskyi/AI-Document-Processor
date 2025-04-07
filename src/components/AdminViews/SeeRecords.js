@@ -148,6 +148,7 @@ const SeeRecords = () => {
   return (
     <Container className="root-container">
 
+      {/* ChatPanel tab displayed on page. */}
       <ChatPanel />
 
       {analyzingDocument || loading ? (
