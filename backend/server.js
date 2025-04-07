@@ -141,13 +141,15 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
   }
 });
 
-// Endpoint to query the AI model
+// Endpoint to query the AI model - Fix the route pattern to use query params correctly
 app.get("/query/:query", auth, async (req, res) => {
   try {
     const query = req.params.query;
+    const submissionId = req.query.submissionId; // Get submissionId from query params
     
     // Debug logs to help diagnose issues
     console.log("Query received:", query);
+    console.log("Submission ID:", submissionId);
 
     // Variable to store the data sent from Python
     let dataToSend = "";
@@ -160,18 +162,43 @@ app.get("/query/:query", auth, async (req, res) => {
       "ai_processing",
       "query.py"
     );
+
     // Fetch api key from environment variables
     const apiKey = process.env.OPENROUTER_API_KEY || "no_key";
     
-    // Spawn the Python process with the query - escape the query string for safety
-    const python = spawn("python", [
+    // Create an array of arguments for the Python script
+    let pythonArgs = [
       scriptPath,
       "--query",
       query,
       "--key",
-      "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",
-      // apiKey,
-    ]);
+      apiKey,
+    ];
+
+    // If a submission ID is provided, fetch the associated file
+    if (submissionId) {
+      try {
+        const submission = await submissionSchema.findById(submissionId);
+        if (submission && submission.file) {
+          // Write the file to disk
+          const tempDir = require("os").tmpdir();
+          const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
+          require("fs").writeFileSync(tempFilePath, submission.file.data);
+          
+          // Add PDF path to arguments
+          pythonArgs.push("--pdf");
+          pythonArgs.push(tempFilePath);
+          console.log("Added PDF file to query:", tempFilePath);
+        } else {
+          console.log("No file found for submission:", submissionId);
+        }
+      } catch (err) {
+        console.error("Error retrieving submission:", err);
+      }
+    }
+
+    // Spawn the Python process with all arguments
+    const python = spawn("python", pythonArgs);
 
     // Collect data from script
     python.stdout.on("data", function (data) {
@@ -179,12 +206,10 @@ app.get("/query/:query", auth, async (req, res) => {
       dataToSend += data.toString();
     });
 
-    // Handle error output - This is crucial for debugging Python errors
     python.stderr.on("data", function (data) {
       console.error("Python error:", data.toString());
     });
 
-    // In close event we are sure that stream from child process is closed
     python.on("close", (code) => {
       console.log(`Python process closed with code ${code}`);
 

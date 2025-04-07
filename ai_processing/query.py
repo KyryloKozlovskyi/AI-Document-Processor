@@ -3,6 +3,51 @@ import sys
 import json
 import argparse
 from openai import OpenAI
+import pytesseract
+from pdf2image import convert_from_path
+from PIL import Image
+import tempfile
+
+def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=r'C:\Program Files\poppler-24.08.0\Library\bin'):
+    """
+    Extract text from a PDF file using Tesseract OCR.
+    
+    Args:
+        pdf_path (str): Path to the PDF file
+        lang (str): Language for OCR (default: 'eng' for English)
+        dpi (int): DPI for PDF to image conversion (higher is better quality but slower)
+        poppler_path (str): Path to Poppler binaries
+    
+    Returns:
+        str: Extracted text from the PDF
+    """
+    # Set the path to the Tesseract executable
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    
+    # Create temporary directory to store images
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Convert PDF to images
+        print(f"Converting PDF: {pdf_path} to images...")
+        # Specify poppler_path for Windows
+        images = convert_from_path(pdf_path, dpi=dpi, poppler_path=poppler_path)
+        
+        # Process each page
+        all_text = []
+        for i, image in enumerate(images):
+            # Save image temporarily
+            temp_img_path = os.path.join(temp_dir, f'page_{i}.png')
+            image.save(temp_img_path, 'PNG')
+            
+            # Apply OCR
+            print(f"Processing page {i+1}/{len(images)}...")
+            text = pytesseract.image_to_string(Image.open(temp_img_path), lang=lang)
+            all_text.append(text)
+            
+            # Remove temporary image file
+            os.remove(temp_img_path)
+    
+    # Join all pages to one string and return
+    return '\n\n'.join(all_text)
 
 def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     """
@@ -19,7 +64,6 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     api_key = args.key
     try:
         # If we don't have an API key, print error
-        # print(f"Api_key: {api_key}")
         if not api_key:
             return "Error: No OpenRouter API key found."
         
@@ -30,7 +74,6 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
         )
         
         # Make the API request
-        # print(f"Sending request to OpenRouter API for model: {model}")
         completion = client.chat.completions.create(
             extra_headers={
                 "HTTP-Referer": "https://ai-document-processor.com",  # Replace with your actual domain
@@ -47,7 +90,6 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
         return completion.choices[0].message.content
             
     except Exception as e:
-        # print(f"Error querying OpenRouter API: {e}")
         return str(e)
 
 if __name__ == "__main__":
@@ -55,17 +97,39 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Query the DeepSeek model")
     parser.add_argument("--query", "-q", type=str, help="The query/prompt to send to the model")
     parser.add_argument("--key", "-a", type=str, help="OpenRouter API key")
+    parser.add_argument("--pdf", "-p", type=str, help="Optional: Path to PDF file to provide context")
     args = parser.parse_args()
     
-    # Pass provided query to model
+    # Check if required arguments are provided
     if not args.query:
-      # Return error
-      # print("Error: No query provided")
-      sys.exit(1)
+        print("Error: No query provided")
+        sys.exit(1)
     
     try:
+        # If PDF file is provided, extract text and include it in the prompt
+        pdf_text = ""
+        if args.pdf and os.path.isfile(args.pdf):
+            print(f"Extracting text from PDF: {args.pdf}")
+            pdf_text = extract_text_from_pdf(args.pdf)
+            
+            # Truncate PDF text if too long (most models have token limits)
+            MAX_CHARS = 10000  # Approximate limit - adjust as needed
+            if len(pdf_text) > MAX_CHARS:
+                pdf_text = pdf_text[:MAX_CHARS] + "...[text truncated due to length]"
+            
+            # Construct prompt with PDF context
+            full_prompt = f"""Here is the text extracted from a PDF document:
+
+{pdf_text}
+
+Based on this document, please answer the following question:
+{args.query}"""
+        else:
+            # Use just the query if no PDF is provided
+            full_prompt = args.query
+        
         # Return model response
-        response = query_deepseek(args.query)
+        response = query_deepseek(full_prompt)
         print(response)
         # Return success
         sys.exit(0)
