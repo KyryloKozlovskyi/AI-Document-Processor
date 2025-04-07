@@ -1,5 +1,5 @@
 // Load environment variables from .env file
-require("dotenv").config();
+require("dotenv").config({ override: true });
 
 // Server port, default 5000
 const port = process.env.SERVER_PORT || 5000;
@@ -145,6 +145,9 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
 app.get("/query/:query", auth, async (req, res) => {
   try {
     const query = req.params.query;
+    
+    // Debug logs to help diagnose issues
+    console.log("Query received:", query);
 
     // Variable to store the data sent from Python
     let dataToSend = "";
@@ -157,21 +160,26 @@ app.get("/query/:query", auth, async (req, res) => {
       "ai_processing",
       "query.py"
     );
-
-    // Spawn the Python process with the query
+    
+    // Fetch api key from environment variables
+    const apiKey = process.env.OPENROUTER_API_KEY || "no_key";
+    
+    // Spawn the Python process with the query - escape the query string for safety
     const python = spawn("python", [
       scriptPath,
       "--query",
-      query
+      query,
+      "--key",
+      apiKey,
     ]);
 
     // Collect data from script
     python.stdout.on("data", function (data) {
-      console.log("Pipe data from python script ...");
+      console.log("Received data from Python script:", data.toString());
       dataToSend += data.toString();
     });
 
-    // Handle error output
+    // Handle error output - This is crucial for debugging Python errors
     python.stderr.on("data", function (data) {
       console.error("Python error:", data.toString());
     });
@@ -184,15 +192,24 @@ app.get("/query/:query", auth, async (req, res) => {
       if (code !== 0) {
         return res.status(500).json({
           message: "Error querying AI model",
-          details: dataToSend,
+          details: dataToSend || "No output from Python script",
         });
       }
 
-      // Send data to browser
-      res.json({
-        query,
-        response: dataToSend,
-      });
+      // Try to parse the response as JSON
+      try {
+        // Send data to browser
+        res.json({
+          query,
+          response: dataToSend.trim(),
+        });
+      } catch (jsonError) {
+        console.error("Error parsing JSON response:", jsonError);
+        res.status(500).json({
+          message: "Error processing AI response",
+          details: "Invalid response format"
+        });
+      }
     });
   } catch (error) {
     console.error("Error in query endpoint:", error);

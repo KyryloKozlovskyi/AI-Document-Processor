@@ -2,18 +2,7 @@ import os
 import sys
 import json
 import argparse
-from dotenv import load_dotenv
 from openai import OpenAI
-
-# Find .env file and load environment variables
-load_dotenv()
-
-# Get API key from environment variable
-api_key = os.getenv("OPENROUTER_API_KEY", None)
-print(f"API key loaded: {'Yes' if api_key else 'No'}")
-if api_key:
-    # Print just the first few and last few characters for security
-    print(f"API KEY: {api_key}")
 
 def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     """
@@ -26,12 +15,13 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
     Returns:
         str: The model's response
     """
+    
+    api_key = args.key
     try:
-        # If we don't have an API key, use our fallback
-        print(f"Api_key: {api_key}")
+        # If we don't have an API key, print error
+        # print(f"Api_key: {api_key}")
         if not api_key:
-            print("No OpenRouter API key found. Using fallback analysis.")
-            return fallback_analysis(prompt)
+            return "Error: No OpenRouter API key found."
         
         # Initialise the OpenAI client with OpenRouter base URL
         client = OpenAI(
@@ -40,7 +30,7 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
         )
         
         # Make the API request
-        print(f"Sending request to OpenRouter API for model: {model}")
+        # print(f"Sending request to OpenRouter API for model: {model}")
         completion = client.chat.completions.create(
             extra_headers={
                 "HTTP-Referer": "https://ai-document-processor.com",  # Replace with your actual domain
@@ -57,19 +47,20 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
         return completion.choices[0].message.content
             
     except Exception as e:
-        print(f"Error querying OpenRouter API: {e}")
+        # print(f"Error querying OpenRouter API: {e}")
         return str(e)
 
 if __name__ == "__main__":
     # Set up argument parser
     parser = argparse.ArgumentParser(description="Query the DeepSeek model")
     parser.add_argument("--query", "-q", type=str, help="The query/prompt to send to the model")
+    parser.add_argument("--key", "-a", type=str, help="OpenRouter API key")
     args = parser.parse_args()
     
     # Pass provided query to model
     if not args.query:
       # Return error
-      print("Error: No query provided")
+      # print("Error: No query provided")
       sys.exit(1)
     
     try:
