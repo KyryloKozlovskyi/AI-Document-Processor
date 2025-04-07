@@ -38,7 +38,7 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
             },
             model=model,
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": "You are a helpful assistant with a commitment to providing high-effort, detailed responses. The context of this application is to process documents and provide analysis. The user may provide document text, and you should respond with comprehensive, thoughtful information regarding their query. Take your time to think through complex problems step by step and provide thorough explanations."},
                 {"role": "user", "content": prompt}
             ]
         )

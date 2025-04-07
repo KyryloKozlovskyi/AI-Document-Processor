@@ -160,7 +160,6 @@ app.get("/query/:query", auth, async (req, res) => {
       "ai_processing",
       "query.py"
     );
-    
     // Fetch api key from environment variables
     const apiKey = process.env.OPENROUTER_API_KEY || "no_key";
     
@@ -170,7 +169,8 @@ app.get("/query/:query", auth, async (req, res) => {
       "--query",
       query,
       "--key",
-      apiKey,
+      "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",
+      // apiKey,
     ]);
 
     // Collect data from script
