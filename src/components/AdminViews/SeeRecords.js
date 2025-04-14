@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Container, Table, Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -16,6 +16,37 @@ const SeeRecords = () => {
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [analysisData, setAnalysisData] = useState(null);
   const [analyzingDocument, setAnalyzingDocument] = useState(false);
+
+  // State and ref for horizontal scrolling
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const tableContainerRef = useRef(null);
+
+  // Handle mouse down event to start dragging
+  const handleMouseDown = (e) => {
+    if (!tableContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - tableContainerRef.current.offsetLeft);
+    setScrollLeft(tableContainerRef.current.scrollLeft);
+    tableContainerRef.current.style.cursor = 'grabbing';
+  };
+
+  // Handle mouse move event for dragging
+  const handleMouseMove = (e) => {
+    if (!isDragging || !tableContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - tableContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    tableContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  // Handle mouse events to end dragging
+  const handleMouseUpOrLeave = () => {
+    if (!tableContainerRef.current) return;
+    setIsDragging(false);
+    tableContainerRef.current.style.cursor = 'grab';
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -189,100 +220,116 @@ const SeeRecords = () => {
           </Form.Group>
         </div>
       </div>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Event</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>File</th>
-            <th>Submitted At</th>
-            <th>Paid</th>
-            <th>Actions</th> {/* Add a new column for actions */}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRecords.map((record) => (
-            <tr key={record._id}>
-              <td>
-                <Badge bg={record.type === "person" ? "primary" : "success"}>
-                  {record.type}
-                </Badge>
-              </td>
-              <td>
-                {
-                  events.find((event) => event._id === record.eventId)
-                    ?.courseName
-                }
-              </td>
-              <td>{record.name}</td>
-              <td>{record.email}</td>
-              <td>
-                {record.file ? (
-                  <Button
-                    variant="link"
-                    onClick={() => downloadFile(record._id)}
-                  >
-                    Download PDF
-                  </Button>
-                ) : (
-                  "No file"
-                )}
-              </td>
-              <td>{new Date(record.createdAt).toLocaleDateString()}</td>
-              <td>
-                <Form.Check
-                  type="checkbox"
-                  checked={record.paid}
-                  onChange={async () => {
-                    const confirmUpdate = window.confirm(
-                      "Are you sure you want to update the payment status?"
-                    );
-                    if (!confirmUpdate) {
-                      return; // If user cancels, do nothing
-                    }
-                    try {
-                      const token = localStorage.getItem("token");
-                      await axios.patch(
-                        `http://localhost:5000/api/submissions/${record._id}`,
-                        { paid: !record.paid },
-                        { headers: { Authorization: `Bearer ${token}` } }
-                      );
-                      setRecords(
-                        records.map((r) =>
-                          r._id === record._id ? { ...r, paid: !r.paid } : r
-                        )
-                      );
-                    } catch (err) {
-                      console.error("Error updating payment status:", err);
-                    }
-                  }}
-                  inline
-                />
-                {record.paid ? (
-                  <Badge bg="success">Paid</Badge>
-                ) : (
-                  <Badge bg="danger">Not Paid</Badge>
-                )}
-              </td>
-              <td>
-                {/* New column with analyze button - only show for records with files */}
-                {record.file && (
-                  <Button
-                    variant="info"
-                    size="sm"
-                    onClick={() => analyzeDocument(record._id)}
-                    disabled={analyzingDocument}
-                  >
-                    {analyzingDocument ? "Analyzing..." : "Analyze Document"}
-                  </Button>
-                )}
-              </td>
+      <div 
+        className="table-responsive-horizontal"
+        ref={tableContainerRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        style={{
+          overflowX: 'auto',
+          cursor: 'grab',
+          userSelect: 'none',
+          position: 'relative',
+          maxWidth: '100%',
+        }}
+      >
+        <Table striped bordered hover className="records-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Event</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>File</th>
+              <th>Submitted At</th>
+              <th>Paid</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {filteredRecords.map((record) => (
+              <tr key={record._id}>
+                <td>
+                  <Badge bg={record.type === "person" ? "primary" : "success"}>
+                    {record.type}
+                  </Badge>
+                </td>
+                <td>
+                  {
+                    events.find((event) => event._id === record.eventId)
+                      ?.courseName
+                  }
+                </td>
+                <td>{record.name}</td>
+                <td>{record.email}</td>
+                <td>
+                  {record.file ? (
+                    <Button
+                      variant="link"
+                      onClick={() => downloadFile(record._id)}
+                    >
+                      Download PDF
+                    </Button>
+                  ) : (
+                    "No file"
+                  )}
+                </td>
+                <td>{new Date(record.createdAt).toLocaleDateString()}</td>
+                <td>
+                  <Form.Check
+                    type="checkbox"
+                    checked={record.paid}
+                    onChange={async () => {
+                      const confirmUpdate = window.confirm(
+                        "Are you sure you want to update the payment status?"
+                      );
+                      if (!confirmUpdate) {
+                        return; // If user cancels, do nothing
+                      }
+                      try {
+                        const token = localStorage.getItem("token");
+                        await axios.patch(
+                          `http://localhost:5000/api/submissions/${record._id}`,
+                          { paid: !record.paid },
+                          { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        setRecords(
+                          records.map((r) =>
+                            r._id === record._id ? { ...r, paid: !r.paid } : r
+                          )
+                        );
+                      } catch (err) {
+                        console.error("Error updating payment status:", err);
+                      }
+                    }}
+                    inline
+                  />
+                  {record.paid ? (
+                    <Badge bg="success">Paid</Badge>
+                  ) : (
+                    <Badge bg="danger">Not Paid</Badge>
+                  )}
+                </td>
+                <td>
+                  {/* New column with analyze button - only show for records with files */}
+                  {record.file && (
+                    <Button
+                      variant="info"
+                      size="sm"
+                      onClick={() => analyzeDocument(record._id)}
+                      disabled={analyzingDocument}
+                    >
+                      {analyzingDocument ? "Analyzing..." : "Analyze Document"}
+                    </Button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
 
       {/* Analysis Results Modal */}
       <Modal show={showAnalysisModal} onHide={handleCloseModal} size="lg">

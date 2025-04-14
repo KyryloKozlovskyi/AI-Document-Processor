@@ -1,0 +1,59 @@
+.table-responsive-horizontal {
+  width: 100%;
+  overflow-x: auto;
+  cursor: grab;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.table-responsive-horizontal:active {
+  cursor: grabbing;
+}
+
+.records-table {
+  min-width: 900px; /* Ensure table is wide enough to need scrolling on most screens */
+  margin-bottom: 0;
+}
+
+.records-table th {
+  white-space: nowrap;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.records-table td {
+  vertical-align: middle;
+}
+
+/* Improve the user experience with visual feedback */
+.table-responsive-horizontal::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Add a visual indicator that the table is scrollable */
+.table-scroll-hint {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  opacity: 0.5;
+  pointer-events: none;
+}
