@@ -11,7 +11,7 @@
   margin-bottom: 3rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
 }
 
 .about-hero h1 {
@@ -37,7 +37,7 @@
   background-color: white;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   transition: transform 0.3s ease;
   text-align: center;
 }
@@ -59,7 +59,7 @@
   background-color: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   margin-top: 2rem;
 }
 
@@ -90,7 +90,7 @@
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .about-hero {
     padding: 2rem 1rem;
   }

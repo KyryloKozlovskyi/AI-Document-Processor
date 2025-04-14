@@ -11,7 +11,7 @@
   margin-bottom: 3rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
 }
 
 .admin-hero h1 {
@@ -37,7 +37,7 @@
   background-color: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
   display: flex;
@@ -48,7 +48,7 @@
 
 .admin-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgb(0 0 0 / 15%);
 }
 
 .admin-card-icon {
@@ -84,10 +84,10 @@
 .admin-btn:hover {
   background-color: #3182ce;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+  box-shadow: 0 5px 15px rgb(66 153 225 / 40%);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .admin-hero {
     padding: 2rem 1rem;
   }

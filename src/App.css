@@ -1,4 +1,4 @@
-.App {
+.app {
   text-align: center;
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -6,18 +6,18 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.App-logo {
+.app-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+  .app-logo {
+    animation: app-logo-spin infinite 20s linear;
   }
 }
 
-.App-header {
+.app-header {
   background-color: var(--secondary-color);
   min-height: 100vh;
   display: flex;
@@ -28,14 +28,15 @@
   color: var(--text-color);
 }
 
-.App-link {
+.app-link {
   color: var(--primary-color);
 }
 
-@keyframes App-logo-spin {
+@keyframes app-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -52,7 +53,7 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Style for theme selector */
+/* Theme selector styling */
 .theme-selector {
   display: flex;
   align-items: center;
@@ -84,7 +85,12 @@
 }
 
 /* Make sure all main containers use theme variables */
-main, section, article, aside, .container, .row {
+main,
+section,
+article,
+aside,
+.container,
+.row {
   background-color: var(--bg-color);
   color: var(--text-color);
 }

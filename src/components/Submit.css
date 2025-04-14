@@ -12,7 +12,7 @@
   background: #1E90FF;
   color: white;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
 }
 
 .submit-header h1 {
@@ -31,7 +31,7 @@
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
   margin-bottom: 2rem;
 }
 
@@ -41,7 +41,12 @@
 
 .form-label {
   font-weight: 600;
-  color: #333333;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.submit-form .form-label {
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
@@ -51,18 +56,18 @@
   padding: 0.75rem;
   transition: all 0.3s ease;
   background-color: #FFF8DC;
-  color: #333333;
+  color: #333;
 }
 
 .form-control:focus {
   border-color: #1E90FF;
-  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.25);
+  box-shadow: 0 0 0 3px rgb(30 144 255 / 25%);
   background-color: white;
 }
 
 .btn-primary {
   background-color: #FFD700;
-  color: #333333;
+  color: #333;
   border: none;
   padding: 0.8rem 2rem;
   font-size: 1rem;
@@ -78,7 +83,7 @@
 .btn-primary:hover {
   background-color: #ADD8E6;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(173, 216, 230, 0.4);
+  box-shadow: 0 5px 15px rgb(173 216 230 / 40%);
 }
 
 .btn-outline-primary {
@@ -91,7 +96,7 @@
 
 .btn-outline-primary:hover {
   background-color: #ADD8E6;
-  color: #333333;
+  color: #333;
   border-color: #ADD8E6;
 }
 
@@ -107,7 +112,7 @@
 
 .download-btn:hover {
   background-color: #ADD8E6;
-  color: #333333;
+  color: #333;
   border-color: #ADD8E6;
 }
 
@@ -130,7 +135,7 @@
   border: 1px solid #feb2b2;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .root-container {
     padding: 1rem;
   }

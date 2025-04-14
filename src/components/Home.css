@@ -11,7 +11,7 @@
   margin-bottom: 3rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
 }
 
 .hero-section h1 {
@@ -41,7 +41,7 @@
 .cta-button:hover {
   background-color: #3182ce;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+  box-shadow: 0 5px 15px rgb(66 153 225 / 40%);
 }
 
 .features-section {
@@ -55,7 +55,7 @@
   background-color: white;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
   transition: transform 0.3s ease;
 }
 
@@ -72,7 +72,7 @@
   color: #4a5568;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .hero-section {
     padding: 2rem 1rem;
   }
