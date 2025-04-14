@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './ChatPanel.css'; // Import panel-specific CSS file.
 import axios from 'axios'; // Import axios for API calls.
 import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown for rendering markdown.
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 
 const ChatPanel = () => {
@@ -21,7 +23,7 @@ const ChatPanel = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         // Extract IDs from submissions
         const ids = response.data.map(submission => ({
           id: submission._id,
@@ -45,24 +47,24 @@ const ChatPanel = () => {
     try {
       setThinking(true);
       const token = localStorage.getItem("token");
-      
+
       // Fix: Use proper URL structure with query parameters
       // The query should be properly encoded to handle special characters
       const encodedQuery = encodeURIComponent(query);
-      
+
       // Build URL with query params properly
       let url = `http://localhost:5000/query/${encodedQuery}`;
-      
+
       console.log("Sending request to:", url);
       console.log("With submission ID:", submissionId || "none");
-      
+
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: submissionId ? { submissionId } : {} // Add submissionId as query parameter
       });
-      
+
       console.log("Chatbot response:", response.data);
       setChatResponse(response.data);
       setThinking(false);
@@ -84,10 +86,10 @@ const ChatPanel = () => {
 
     if (query) {
       // Add selected submission ID to the query if available
-      const queryWithContext = submissionId 
+      const queryWithContext = submissionId
         ? `Regarding submission ${submissionId}: ${query}`
         : query;
-        
+
       await queryChatbot(queryWithContext, submissionId);
     } else {
       alert("Please enter a question.");
@@ -98,7 +100,22 @@ const ChatPanel = () => {
     <div className="chat-panel-container">
       {/* Change className for CSS styling. */}
       <button className={`toggle-button ${isPanelOpen ? 'open' : ''}`} onClick={togglePanel}>
-        {isPanelOpen ? 'Close Panel' : 'Open Panel'}
+        {isPanelOpen ?
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ paddingRight: '10px' }}>
+              <FaArrowAltCircleRight />
+            </div>
+            <div className="p-1">Close Panel</div>
+          </div>
+          :
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ paddingRight: '10px' }}>
+              <FaArrowAltCircleLeft />
+            </div>
+            <div className="p-1">Open Panel</div>
+          </div>
+        }
       </button>
       <div className={`side-panel ${isPanelOpen ? 'open' : ''}`}>
         <h2>Chatbot</h2>
@@ -108,7 +125,7 @@ const ChatPanel = () => {
           <div className="form-group">
             <input type="text" id="userInput" className="form-control" placeholder="Type your question here..." />
           </div>
-          
+
           {/* Add dropdown for submissions */}
           <div className="form-group mt-3">
             <label htmlFor="submissionSelect">Select Submission:</label>
@@ -122,8 +139,6 @@ const ChatPanel = () => {
             </select>
           </div>
           
-          <label>Upload PDF:</label>
-          <input type="file" accept=".pdf" className="form-control" />
           <button type="submit" className="btn btn-primary">Send</button>
 
           <div className="form-group mt-3">
