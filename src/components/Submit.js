@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
-import "./Submit.css"; // Import the new CSS file
+import "./Submit.css"; // Import the CSS file
 
 const Submit = () => {
   const [events, setEvents] = useState([]);
@@ -107,16 +107,16 @@ const Submit = () => {
   return (
     <Container className="root-container">
       <div className="submit-header">
-        <h1>Submit Your Documents</h1>
-        <p>Fill out the form below to submit your information for processing</p>
+        <h1>Document Submission</h1>
+        <p className="submit-tagline">Submit your documents for processing and analysis</p>
       </div>
-      
+
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
       
       <Form className="submit-form" onSubmit={handleSubmit}>
         <Form.Group controlId="formEvent">
-          <Form.Label>Event</Form.Label>
+          <Form.Label>Select Event</Form.Label>
           <Form.Control
             as="select"
             name="eventId"
@@ -133,7 +133,7 @@ const Submit = () => {
         </Form.Group>
         
         <Form.Group controlId="formType">
-          <Form.Label>Type</Form.Label>
+          <Form.Label>Submission Type</Form.Label>
           <Form.Control
             as="select"
             name="type"
@@ -148,23 +148,23 @@ const Submit = () => {
         {formData.type === "person" && (
           <>
             <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Full Name</Form.Label>
               <Form.Control
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter your name"
+                placeholder="Enter your full name"
               />
             </Form.Group>
             <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 value={formData.email.toLowerCase()}
                 onChange={handleChange}
-                placeholder="Enter your email"
+                placeholder="Enter your email address"
               />
             </Form.Group>
           </>

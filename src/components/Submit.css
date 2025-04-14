@@ -5,6 +5,28 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.submit-header {
+  text-align: center;
+  padding: 3rem 1rem;
+  margin-bottom: 3rem;
+  background: #1E90FF;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.submit-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.submit-tagline {
+  font-size: 1.2rem;
+  color: #FFF8DC;
+  margin-bottom: 2rem;
+}
+
 .submit-form {
   background: white;
   padding: 2rem;
@@ -13,33 +35,13 @@
   margin-bottom: 2rem;
 }
 
-.submit-header {
-  text-align: center;
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-.submit-header h1 {
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-  color: #2d3748;
-}
-
-.submit-header p {
-  font-size: 1.1rem;
-  color: #4a5568;
-}
-
 .form-group {
   margin-bottom: 1.5rem;
 }
 
 .form-label {
   font-weight: 600;
-  color: #2d3748;
+  color: #333333;
   margin-bottom: 0.5rem;
 }
 
@@ -48,16 +50,19 @@
   border: 1px solid #e2e8f0;
   padding: 0.75rem;
   transition: all 0.3s ease;
+  background-color: #FFF8DC;
+  color: #333333;
 }
 
 .form-control:focus {
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+  border-color: #1E90FF;
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.25);
+  background-color: white;
 }
 
 .btn-primary {
-  background-color: #4299e1;
-  color: white;
+  background-color: #FFD700;
+  color: #333333;
   border: none;
   padding: 0.8rem 2rem;
   font-size: 1rem;
@@ -71,9 +76,39 @@
 }
 
 .btn-primary:hover {
-  background-color: #3182ce;
+  background-color: #ADD8E6;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+  box-shadow: 0 5px 15px rgba(173, 216, 230, 0.4);
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: #1E90FF;
+  border: 2px solid #1E90FF;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #ADD8E6;
+  color: #333333;
+  border-color: #ADD8E6;
+}
+
+.download-btn {
+  margin-bottom: 1rem;
+  background-color: white;
+  color: #1E90FF;
+  border: 2px solid #1E90FF;
+  border-radius: 30px;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #ADD8E6;
+  color: #333333;
+  border-color: #ADD8E6;
 }
 
 .alert {
@@ -93,10 +128,6 @@
   background-color: #fed7d7;
   color: #c53030;
   border: 1px solid #feb2b2;
-}
-
-.download-btn {
-  margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
