@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
+import "./Submit.css"; // Import the new CSS file
 
 const Submit = () => {
   const [events, setEvents] = useState([]);
@@ -105,14 +106,20 @@ const Submit = () => {
 
   return (
     <Container className="root-container">
+      <div className="submit-header">
+        <h1>Submit Your Documents</h1>
+        <p>Fill out the form below to submit your information for processing</p>
+      </div>
+      
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
+      
       <Form className="submit-form" onSubmit={handleSubmit}>
         <Form.Group controlId="formEvent">
           <Form.Label>Event</Form.Label>
           <Form.Control
             as="select"
-            name="eventId" // Change this to match the key in formData
+            name="eventId"
             value={formData.eventId}
             onChange={handleChange}
           >
@@ -124,6 +131,7 @@ const Submit = () => {
             ))}
           </Form.Control>
         </Form.Group>
+        
         <Form.Group controlId="formType">
           <Form.Label>Type</Form.Label>
           <Form.Control
@@ -136,6 +144,7 @@ const Submit = () => {
             <option value="company">Company</option>
           </Form.Control>
         </Form.Group>
+        
         {formData.type === "person" && (
           <>
             <Form.Group controlId="formName">
@@ -145,6 +154,7 @@ const Submit = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="Enter your name"
               />
             </Form.Group>
             <Form.Group controlId="formEmail">
@@ -154,10 +164,12 @@ const Submit = () => {
                 name="email"
                 value={formData.email.toLowerCase()}
                 onChange={handleChange}
+                placeholder="Enter your email"
               />
             </Form.Group>
           </>
         )}
+        
         {formData.type === "company" && (
           <>
             <Form.Group controlId="formCompanyName">
@@ -167,6 +179,7 @@ const Submit = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="Enter company name"
               />
             </Form.Group>
             <Form.Group controlId="formCompanyEmail">
@@ -176,11 +189,16 @@ const Submit = () => {
                 name="email"
                 value={formData.email.toLowerCase()}
                 onChange={handleChange}
+                placeholder="Enter company email"
               />
             </Form.Group>
             <Form.Group controlId="formDownload">
-              <Button variant="primary" onClick={() => window.open("http://localhost:5000/companyform")}>
-                Download PDF
+              <Button 
+                variant="outline-primary" 
+                className="download-btn"
+                onClick={() => window.open("http://localhost:5000/companyform")}
+              >
+                Download PDF Form
               </Button>
             </Form.Group>
             <Form.Group controlId="formFile">
@@ -194,6 +212,7 @@ const Submit = () => {
             </Form.Group>
           </>
         )}
+        
         <Button variant="primary" type="submit">
           Submit
         </Button>
