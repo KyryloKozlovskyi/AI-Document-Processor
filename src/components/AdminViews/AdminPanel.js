@@ -1,6 +1,6 @@
 import React from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import "./AdminPanel.css";
 
 // AdminPanel component is a dashboard for the admin user. It contains three cards that link to different admin views.
 const AdminPanel = () => {
@@ -28,25 +28,25 @@ const AdminPanel = () => {
   ];
 
   return (
-    <Container className="py-5">
-      <h1 className="text-center mb-5">Admin Dashboard</h1>
-      <Row>
+    <div className="admin-container">
+      <div className="admin-hero">
+        <h1>Admin Dashboard</h1>
+        <p className="admin-tagline">Manage your events and submissions with ease</p>
+      </div>
+
+      <div className="admin-cards">
         {cards.map((card, index) => (
-          <Col key={index} md={4} className="mb-4">
-            <Card className="h-100 text-center">
-              <Card.Body>
-                <div className="display-4 mb-3">{card.icon}</div>
-                <Card.Title>{card.title}</Card.Title>
-                <Card.Text>{card.description}</Card.Text>
-                <Button variant="primary" onClick={() => navigate(card.link)}>
-                  Access
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
+          <div key={index} className="admin-card">
+            <div className="admin-card-icon">{card.icon}</div>
+            <h3>{card.title}</h3>
+            <p>{card.description}</p>
+            <button className="admin-btn" onClick={() => navigate(card.link)}>
+              Access
+            </button>
+          </div>
         ))}
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 };
 
