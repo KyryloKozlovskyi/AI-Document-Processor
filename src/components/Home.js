@@ -1,29 +1,36 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css"; // We'll create this file next
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="root-container">
-      <h1>Welcome to the AI Document Processor</h1>
-
-      <div className="content-container">
-        <h2>About the Project</h2>
-        <p>This project is designed to help you process documents using AI.</p>
-
-        <h2>Features</h2>
-        <ul>
-          <li>Submit documents for processing</li>
-          <li>View processed records</li>
-          <li>Admin panel for managing events and records</li>
-        </ul>
-
-        <h2>Getting Started</h2>
-        <p>To get started, navigate to the Submit page to upload your documents.</p>
-        <p>If you are an admin, you can access the admin panel for additional features.</p>
+    <div className="home-container">
+      <div className="hero-section">
+        <h1>AI Document Processor</h1>
+        <p className="tagline">
+          Streamline your document processing with the power of AI
+        </p>
+        <button className="cta-button" onClick={() => navigate("/submit")}>
+          Get Started
+        </button>
       </div>
 
-      <button className="btn btn-primary" onClick={() => window.location.href = '/submit'}>
-        Submit a Form
-      </button>
+      <div className="features-section">
+        <div className="feature-card">
+          <h3>Submit Documents</h3>
+          <p>Upload your files for intelligent processing and analysis</p>
+        </div>
+        <div className="feature-card">
+          <h3>View Records</h3>
+          <p>Access and manage all your processed documents in one place</p>
+        </div>
+        <div className="feature-card">
+          <h3>Admin Controls</h3>
+          <p>Powerful tools for administrators to manage the system</p>
+        </div>
+      </div>
     </div>
   );
 };
