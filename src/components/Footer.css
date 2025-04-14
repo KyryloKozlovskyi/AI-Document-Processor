@@ -1,0 +1,17 @@
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1e90ff;
+  color: white; /* Changed text color to white for better contrast on blue */
+  border-top: 1px solid var(--border-color);
+  padding: 1rem 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Add padding to the bottom of the content to prevent it from being hidden behind the footer */
+body {
+  padding-bottom: 60px; /* Adjust this value based on your footer's height */
+}
