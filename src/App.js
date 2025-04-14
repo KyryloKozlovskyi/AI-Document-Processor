@@ -12,7 +12,6 @@ import AdminPanel from "./components/AdminViews/AdminPanel";
 import { AdminProvider } from "./components/AdminViews/AdminContext";
 import ProtectedRoute from "./components/AdminViews/ProtectedRoute";
 import Login from "./components/AdminViews/Login";
-import Preferences from "./components/Preferences";
 
 function App() {
   return (
@@ -25,7 +24,6 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/preferences" element={<Preferences />} />
 
           {/* Protected Admin Routes */}
           <Route
