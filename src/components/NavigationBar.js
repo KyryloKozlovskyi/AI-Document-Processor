@@ -1,3 +1,4 @@
+import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useAdmin } from "./AdminViews/AdminContext";
@@ -31,4 +32,5 @@ const NavigationBar = () => {
   );
 };
 
-export default NavigationBar;
+// Export with React.memo to prevent unnecessary re-renders
+export default React.memo(NavigationBar);

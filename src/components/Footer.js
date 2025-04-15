@@ -11,4 +11,5 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+// Export with React.memo to prevent unnecessary re-renders
+export default React.memo(Footer);
