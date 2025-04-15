@@ -11,18 +11,18 @@ const NavigationBar = () => {
         Navbar
       </Navbar.Brand>
       <Nav className="me-auto">
-        <Nav.Link href="/">Home</Nav.Link>
-        <Nav.Link href="/submit">Submit</Nav.Link>
-        <Nav.Link href="/about">About</Nav.Link>
+        <Nav.Link className="px-2" href="/">Home</Nav.Link>
+        <Nav.Link className="px-2" href="/submit">Submit</Nav.Link>
+        <Nav.Link className="px-2" href="/about">About</Nav.Link>
       </Nav>
       <Nav>
         {isAdmin ? (
           <>
             <Nav.Link href="/admin">Admin Panel</Nav.Link>
-            <Nav.Link onClick={logout}>Logout</Nav.Link>
+            <Nav.Link className="px-4" onClick={logout}>Logout</Nav.Link>
           </>
         ) : (
-          <Nav.Link className="p-2" href="/login">
+          <Nav.Link className="px-4" href="/login">
             Login
           </Nav.Link>
         )}

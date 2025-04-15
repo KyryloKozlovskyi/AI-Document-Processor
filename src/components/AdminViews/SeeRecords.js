@@ -186,9 +186,10 @@ const SeeRecords = () => {
         <div className="loading-overlay">
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Analyzing...</span>
-            </Spinner>
-            </div>
-            ) : null}
+          </Spinner>
+        </div>
+      ) : null
+      }
 
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
@@ -220,7 +221,7 @@ const SeeRecords = () => {
           </Form.Group>
         </div>
       </div>
-      <div 
+      <div
         className="table-responsive-horizontal"
         ref={tableContainerRef}
         onMouseDown={handleMouseDown}
