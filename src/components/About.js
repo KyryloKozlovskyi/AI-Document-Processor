@@ -47,6 +47,7 @@ const About = () => {
           <p>G00425385</p>
         </div>
       </div>
+      <div className="page-padding-bottom"></div>
     </div>
   );
 };

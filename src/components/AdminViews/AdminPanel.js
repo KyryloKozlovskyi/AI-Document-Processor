@@ -46,6 +46,7 @@ const AdminPanel = () => {
           </div>
         ))}
       </div>
+      <div className="page-padding-bottom"></div>
     </div>
   );
 };

@@ -64,15 +64,6 @@ body {
   padding-bottom: 60px;
 }
 
-/* Footer specific styling */
-.app-footer {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border-top: 1px solid var(--border-color);
-  padding: 1rem 0;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
 /* Apply theme to root container */
 #root {
   min-height: 100%;
@@ -538,4 +529,8 @@ footer.app-footer {
   .about-hero h1 {
     font-size: 2rem;
   }
+}
+
+.page-padding-bottom {
+  padding: 40px;
 }
