@@ -105,11 +105,11 @@ const Submit = () => {
   };
 
   return (
-    <div className="submit-container">
-      <div className="submit-header">
+    <div className="submit-container page-container">
+      <div className="hero-section">
         <h1>Document Submission</h1>
-        <p className="submit-tagline">
-          Submit your documents for processing and analysis
+        <p className="tagline">
+           Submit your documents for processing and analysis
         </p>
       </div>
 
