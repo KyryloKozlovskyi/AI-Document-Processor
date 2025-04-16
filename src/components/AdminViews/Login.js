@@ -3,6 +3,7 @@ import { Form, Button, Container, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAdmin } from "./AdminContext";
+import "./styles/Login.css"; // We'll create this file
 
 // Admin login component
 const Login = () => {
@@ -33,11 +34,18 @@ const Login = () => {
   };
 
   return (
-    <Container className="root-container">
-      <h2>Admin Login</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
+    <div className="login-container">
+      <div className="login-header">
+        <h1>Admin Login</h1>
+        <p className="login-tagline">
+          Access the admin dashboard to manage events and submissions
+        </p>
+      </div>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <Form className="login-form" onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="formUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="text"
@@ -45,10 +53,12 @@ const Login = () => {
             onChange={(e) =>
               setCredentials({ ...credentials, username: e.target.value })
             }
+            placeholder="Enter your username"
             required
           />
         </Form.Group>
-        <Form.Group className="mb-3">
+        
+        <Form.Group className="mb-3" controlId="formPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
@@ -56,12 +66,16 @@ const Login = () => {
             onChange={(e) =>
               setCredentials({ ...credentials, password: e.target.value })
             }
+            placeholder="Enter your password"
             required
           />
         </Form.Group>
-        <Button type="submit">Login</Button>
+        
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
       </Form>
-    </Container>
+    </div>
   );
 };
 
