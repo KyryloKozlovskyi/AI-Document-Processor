@@ -6,7 +6,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="home-container">
+    <div className="home-container page-container">
       <div className="hero-section">
         <h1>AI Document Processor</h1>
         <p className="tagline">

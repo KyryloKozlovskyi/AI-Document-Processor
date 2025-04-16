@@ -1,4 +1,8 @@
+/* Import shared styles */
+@import "./SharedStyles.css";
+
 .home-container {
+  composes: page-container;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
@@ -23,6 +27,7 @@
 }
 
 .tagline {
+  composes: hero-tagline;
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2rem;
