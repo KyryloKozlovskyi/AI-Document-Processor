@@ -157,9 +157,14 @@ const SeeRecords = () => {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
       case "eventId":
-        return filteredRecords.sort((a, b) =>
-          a.eventId.localeCompare(b.eventId)
-        );
+        return filteredRecords.sort((a, b) => {
+          // Handle cases where either eventId might be null/undefined
+          if (!a.eventId && !b.eventId) return 0; // Both are null/undefined, consider them equal
+          if (!a.eventId) return 1; // a is null/undefined, move to end
+          if (!b.eventId) return -1; // b is null/undefined, move to end
+          // If both exist, use normal string comparison
+          return a.eventId.localeCompare(b.eventId);
+        });
       default:
         return filteredRecords;
     }
@@ -188,16 +193,7 @@ const SeeRecords = () => {
       {/* ChatPanel tab displayed on page. */}
       <ChatPanel />
 
-      {/* Loading spinner overlay if loading or analysing */}
-      {analyzingDocument || loading ? (
-        <div className="loading-overlay">
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Analyzing...</span>
-          </Spinner>
-        </div>
-      ) : null
-      }
-
+      {/* Always render the table container to maintain ref connection */}
       <div className="d-flex justify-content-between align-items-center my-4">
         <h2>Submission Records</h2>
         <div className="d-flex">
@@ -230,6 +226,7 @@ const SeeRecords = () => {
           </Form.Group>
         </div>
       </div>
+
       <div
         className="table-responsive-horizontal"
         ref={tableContainerRef}
@@ -243,6 +240,7 @@ const SeeRecords = () => {
           userSelect: 'none',
           position: 'relative',
           maxWidth: '100%',
+          opacity: loading || analyzingDocument ? 0.6 : 1,
         }}
       >
         {/* Table for displaying records */}
@@ -342,6 +340,15 @@ const SeeRecords = () => {
           </tbody>
         </Table>
       </div>
+
+      {/* Keep the loading spinner as an overlay that doesn't remove the table */}
+      {(analyzingDocument || loading) && (
+        <div className="loading-overlay pt-5">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Analyzing...</span>
+          </Spinner>
+        </div>
+      )}
 
       {/* Analysis Results Modal */}
       <Modal show={showAnalysisModal} onHide={handleCloseModal} size="lg">
