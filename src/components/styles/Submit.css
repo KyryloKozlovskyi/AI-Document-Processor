@@ -1,36 +1,41 @@
 /* Import shared styles */
-@import './SharedStyles.css';
+@import "./SharedStyles.css";
 
 .root-container {
-  composes: page-container;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(
+    100vh - 100px
+  ); /* Adjust based on your header/footer height */
+  justify-content: center;
+  align-items: center; /* Center horizontally */
 }
 
 .submit-header {
-  composes: hero-section;
   text-align: center;
   padding: 3rem 1rem;
   margin-bottom: 3rem;
-  background: #1E90FF;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   color: white;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
+  width: 100%; /* Match full width like other pages */
+  max-width: 1200px; /* Limit maximum width */
 }
 
 .submit-header h1 {
-  composes: hero-section h1;
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: white;
 }
 
 .submit-tagline {
-  composes: hero-tagline;
   font-size: 1.2rem;
-  color: #FFF8DC;
+  color: #fff8dc;
   margin-bottom: 2rem;
 }
 
@@ -39,8 +44,10 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
-  margin-bottom: 2rem;
+  margin-bottom: 0; /* Changed from 2rem to 0 */
   border-top: 4px solid #6a11cb;
+  width: 100%; /* Full width within container */
+  max-width: 1200px; /* Match the header width */
 }
 
 .form-group {
@@ -63,18 +70,18 @@
   border: 1px solid #e2e8f0;
   padding: 0.75rem;
   transition: all 0.3s ease;
-  background-color: #FFF8DC;
+  background-color: #fff8dc;
   color: #333;
 }
 
 .form-control:focus {
-  border-color: #1E90FF;
+  border-color: #1e90ff;
   box-shadow: 0 0 0 3px rgb(30 144 255 / 25%);
   background-color: white;
 }
 
 .btn-primary {
-  background-color: #FFD700;
+  background-color: #ffd700;
   color: #333;
   border: none;
   padding: 0.8rem 2rem;
@@ -146,15 +153,15 @@
   .root-container {
     padding: 1rem;
   }
-  
+
   .submit-form {
     padding: 1.5rem;
   }
-  
+
   .submit-header {
     padding: 1.5rem 1rem;
   }
-  
+
   .submit-header h1 {
     font-size: 1.8rem;
   }

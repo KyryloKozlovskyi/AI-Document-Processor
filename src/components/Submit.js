@@ -105,15 +105,17 @@ const Submit = () => {
   };
 
   return (
-    <Container className="root-container">
+    <div className="about-container">
       <div className="submit-header">
         <h1>Document Submission</h1>
-        <p className="submit-tagline">Submit your documents for processing and analysis</p>
+        <p className="submit-tagline">
+          Submit your documents for processing and analysis
+        </p>
       </div>
 
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
-      
+
       <Form className="submit-form" onSubmit={handleSubmit}>
         <Form.Group controlId="formEvent">
           <Form.Label>Select Event</Form.Label>
@@ -131,7 +133,7 @@ const Submit = () => {
             ))}
           </Form.Control>
         </Form.Group>
-        
+
         <Form.Group controlId="formType">
           <Form.Label>Submission Type</Form.Label>
           <Form.Control
@@ -144,7 +146,7 @@ const Submit = () => {
             <option value="company">Company</option>
           </Form.Control>
         </Form.Group>
-        
+
         {formData.type === "person" && (
           <>
             <Form.Group controlId="formName">
@@ -169,7 +171,7 @@ const Submit = () => {
             </Form.Group>
           </>
         )}
-        
+
         {formData.type === "company" && (
           <>
             <Form.Group controlId="formCompanyName">
@@ -193,8 +195,8 @@ const Submit = () => {
               />
             </Form.Group>
             <Form.Group controlId="formDownload">
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 className="download-btn"
                 onClick={() => window.open("http://localhost:5000/companyform")}
               >
@@ -212,12 +214,12 @@ const Submit = () => {
             </Form.Group>
           </>
         )}
-        
+
         <Button variant="primary" type="submit">
           Submit
         </Button>
       </Form>
-    </Container>
+    </div>
   );
 };
 
