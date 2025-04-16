@@ -50,6 +50,7 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Feature cards - specific to Home */
 .features-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

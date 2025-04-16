@@ -24,7 +24,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hero-tagline {
+.hero-tagline, .tagline, .submit-tagline, .about-tagline {
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2rem;

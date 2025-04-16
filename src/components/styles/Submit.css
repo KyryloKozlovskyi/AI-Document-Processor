@@ -4,14 +4,14 @@
 .root-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem; /* Reduce bottom padding */
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: calc(
     100vh - 100px
   ); /* Adjust based on your header/footer height */
-  justify-content: center;
+  justify-content: center; /* Change from flex-start to center */
   align-items: center; /* Center horizontally */
 }
 
@@ -37,6 +37,20 @@
   font-size: 1.2rem;
   color: #fff8dc;
   margin-bottom: 2rem;
+}
+
+.submit-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem; /* Remove top/bottom padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  justify-content: center; /* Add this to center content vertically */
+  min-height: calc(
+    100vh - 100px
+  ); /* Add this to make container take up full viewport height */
 }
 
 .submit-form {
@@ -92,6 +106,8 @@
   font-weight: 600;
   margin-top: 1rem;
   width: auto;
+  margin-left: auto;
+  margin-right: auto; /* Center the button */
   display: block;
 }
 
