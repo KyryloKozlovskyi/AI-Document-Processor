@@ -6,6 +6,7 @@ import "./styles/AdminPanel.css"; // Import CSS for styling.
 const AdminPanel = () => {
   const navigate = useNavigate();
 
+  // Define the cards to be displayed in the admin panel
   const cards = [
     {
       title: "Manage Events",
@@ -36,24 +37,6 @@ const AdminPanel = () => {
         </p>
       </div>
 
-      <div className="admin-cards-container">
-        <div className="admin-cards">
-          {cards.map((card, index) => (
-            <div key={index} className="admin-card">
-              <div className="admin-card-content">
-                <div className="admin-card-icon">{card.icon}</div>
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-                <button
-                  className="btn-primary"
-                  onClick={() => navigate(card.link)}
-                >
-                  Access
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
       <div className="page-padding-bottom"></div>
     </div>

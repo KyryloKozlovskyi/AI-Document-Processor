@@ -48,6 +48,7 @@ const SeeRecords = () => {
     tableContainerRef.current.style.cursor = 'grab';
   };
 
+  // Fetch events and records on component enter
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -60,6 +61,7 @@ const SeeRecords = () => {
     fetchEvents();
   }, []);
 
+  // Fetch records on component enter
   useEffect(() => {
     const fetchRecords = async () => {
       try {
@@ -142,6 +144,7 @@ const SeeRecords = () => {
     setAnalysisData(null);
   };
 
+  // Filter records based on selected criteria
   const filterRecords = (records, filterBy) => {
     const filteredRecords = [...records];
     switch (filterBy) {
@@ -162,11 +165,13 @@ const SeeRecords = () => {
     }
   };
 
+  // Filter records by selected course
   const filterByCourse = (records, selectedCourse) => {
     if (!selectedCourse) return records;
     return records.filter((record) => record.eventId === selectedCourse);
   };
 
+  // Return error if any
   if (error) {
     return <Container className="text-danger root-container" >{error}</Container>;
   }
@@ -176,12 +181,14 @@ const SeeRecords = () => {
     selectedCourse
   );
 
+  // Render component
   return (
     <Container className="root-container">
 
       {/* ChatPanel tab displayed on page. */}
       <ChatPanel />
 
+      {/* Loading spinner overlay if loading or analysing */}
       {analyzingDocument || loading ? (
         <div className="loading-overlay">
           <Spinner animation="border" role="status">
@@ -195,6 +202,8 @@ const SeeRecords = () => {
         <h2>Submission Records</h2>
         <div className="d-flex">
           <Badge bg="primary m-2">Records: {filteredRecords.length}</Badge>
+
+          {/* Filter and sort criteria */}
           <Form.Group style={{ width: "200px", marginRight: "10px" }}>
             <Form.Select
               value={filterBy}
@@ -236,6 +245,7 @@ const SeeRecords = () => {
           maxWidth: '100%',
         }}
       >
+        {/* Table for displaying records */}
         <Table striped bordered hover className="records-table">
           <thead>
             <tr>
@@ -307,6 +317,7 @@ const SeeRecords = () => {
                     }}
                     inline
                   />
+                  {/* Display badge based on payment status */}
                   {record.paid ? (
                     <Badge bg="success">Paid</Badge>
                   ) : (

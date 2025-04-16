@@ -56,7 +56,14 @@ mongoose
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Update the path in your analyze endpoint (there are two copies in your file)
+/* Endpoints below */
+
+/**
+ * Endpoint to analyze a PDF submission
+ * @param {string} submissionId - ID of the submission to analyze
+ * @returns {object} - JSON response containing analysis results
+ * @throws {Error} - If an error occurs during analysis or file handling
+ */
 app.get("/analyze/:submissionId", auth, async (req, res) => {
   try {
     const submissionId = req.params.submissionId;
@@ -86,8 +93,7 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
       "processor.py"
     );
 
-    // Spawn the Python process with the file path but don't use --analyze flag
-    // This will make it analyze without saving to a file
+    // Spawn a Python process to analyze the PDF file
     const python = spawn("python", [
       scriptPath,
       "--pdf",
@@ -95,18 +101,18 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
       "--direct-output", // Add a new flag to indicate direct output mode
     ]);
 
-    // Collect data from script
+    // Collect data from the Python script's standard output
     python.stdout.on("data", function (data) {
       console.log("Pipe data from python script ...");
       dataToSend += data.toString();
     });
 
-    // Handle error output
+    // Handle error output from the Python script
     python.stderr.on("data", function (data) {
       console.error("Python error:", data.toString());
     });
 
-    // In close event we are sure that stream from child process is closed
+    // Handle the completion of the Python process
     python.on("close", (code) => {
       console.log(`Python process closed with code ${code}`);
 
@@ -141,7 +147,14 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
   }
 });
 
-// Endpoint to query the AI model - Fix the route pattern to use query params correctly
+/** 
+ * Endpoint to query the AI model with a specified query
+ * @param {string} query - The query string to send to the AI model
+ * @param {string} submissionId - Optional ID of the submission to analyze
+ * @returns {object} - JSON response containing the AI model's response
+ * @throws {Error} - If an error occurs during the query process
+ * @description - This endpoint allows users to query the AI model with a specific query string.
+*/
 app.get("/query/:query", auth, async (req, res) => {
   try {
     const query = req.params.query;
@@ -245,13 +258,23 @@ app.get("/query/:query", auth, async (req, res) => {
   }
 });
 
-// get a locally stored pdf file
+/**
+ * Endpoint to serve the company form PDF file
+ * @returns {file} - The company form PDF file
+ * @throws {Error} - If an error occurs while serving the file
+ * @description - This endpoint serves the company form PDF file to the client.
+ */
 app.get("/companyform", (req, res) => {
   console.log(__dirname);
   res.sendFile(__dirname + "/pdfs/companyform.pdf");
 });
 
-// Create event
+/**
+ * Endpoint to serve the student form PDF file
+ * @returns {file} - The student form PDF file
+ * @throws {Error} - If an error occurs while serving the file
+ * @description - This endpoint serves the student form PDF file to the client.
+ */
 app.post("/api/events", auth, async (req, res) => {
   try {
     console.log(req.body);
@@ -264,7 +287,14 @@ app.post("/api/events", auth, async (req, res) => {
   }
 });
 
-// protected patch endpoint for submissions to update paid status
+/**
+ * Endpoint to update a submission's payment status
+ * @param {string} id - ID of the submission to update
+ * @param {boolean} paid - New payment status
+ * @returns {object} - JSON response containing the updated submission
+ * @throws {Error} - If an error occurs during the update process
+ * @description - This endpoint updates the payment status of a submission in the database using its ID.
+ */
 app.patch("/api/submissions/:id", auth, async (req, res) => {
   try {
     const submission = await submissionSchema.findById(req.params.id);
@@ -282,52 +312,14 @@ app.patch("/api/submissions/:id", auth, async (req, res) => {
   }
 });
 
-/* // Create submission endpoint
-app.post("/api/events", auth, async (req, res) => {
-  try {
-    const { eventName, venue, date, price, emailText } = req.body;
-
-    const event = new eventSchema({
-      eventName,
-      venue,
-      date,
-      price,
-      emailText,
-    });
-
-    await event.save();
-
-    res.status(201).json({
-      message: "Event creation successful",
-      event: {
-        eventName: event.eventName,
-        venue: event.venue,
-        date: event.date,
-        price: event.price,
-        emailText: event.emailText,
-      },
-    });
-  } catch (error) {
-    console.error("Event error:", error);
-    res.status(500).json({
-      message: "Error processing event",
-      error: error.message,
-    });
-  }
-}); */
-
-/* // delete all submissions
-app.delete("/api/submissions", async (req, res) => {
-  try {
-    await submissionSchema.deleteMany();
-    res.status(204).end();
-  } catch (error) {
-    console.error("Error deleting submissions:", error);
-    res.status(500).json({ message: "Error deleting submissions" });
-  }
-}); */
-
-// Update event
+/**
+ * Endpoint to update an event
+ * @param {string} id - ID of the event to update
+ * @param {object} eventData - New event data
+ * @returns {object} - JSON response containing the updated event
+ * @throws {Error} - If an error occurs during the update process
+ * @description - This endpoint updates an event in the database using its ID.
+ */
 app.put("/api/events/:id", async (req, res) => {
   try {
     await eventSchema.findByIdAndUpdate(req.params.id, req.body);
@@ -338,7 +330,12 @@ app.put("/api/events/:id", async (req, res) => {
   }
 });
 
-// Delete event
+/**
+ * Endpoint to delete an event
+ * @param {string} id - ID of the event to delete
+ * @throws {Error} - If an error occurs during the deletion process
+ * @description - This endpoint deletes an event from the database using its ID.
+ */
 app.delete("/api/events/:id", async (req, res) => {
   try {
     await eventSchema.findByIdAndDelete(req.params.id);
@@ -356,7 +353,13 @@ app.delete("/api/events/:id", async (req, res) => {
   }
 });
 
-// Get event by id
+/**
+ * Endpoint to get a specific event by ID
+ * @param {string} id - ID of the event to retrieve
+ * @returns {object} - JSON response containing the event data
+ * @throws {Error} - If an error occurs during the retrieval process
+ * @description - This endpoint retrieves a specific event from the database using its ID.
+ */
 app.get("/api/events/:id", async (req, res) => {
   try {
     const event = await eventSchema.findById(req.params.id);
@@ -370,7 +373,13 @@ app.get("/api/events/:id", async (req, res) => {
   }
 });
 
-// Get all events
+/**
+ * Endpoint to get all events
+ * @param {object} req - Request object
+ * @returns {array} - JSON response containing an array of events
+ * @throws {Error} - If an error occurs during the retrieval process
+ * @description - This endpoint retrieves all events from the database and sorts them by date in descending order.
+ */
 app.get("/api/events", async (req, res) => {
   try {
     const events = await eventSchema.find().sort({ date: -1 });
@@ -381,7 +390,13 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
-// Update event
+/**
+ * Endpoint to create a new event
+ * @param {object} req - Request object containing event data
+ * @returns {object} - JSON response containing the created event
+ * @throws {Error} - If an error occurs during the creation process
+ * @description - This endpoint creates a new event in the database.
+ */
 app.put("/api/events/:id", async (req, res) => {
   try {
     await eventSchema.findByIdAndUpdate(req.params.id, req.body);
@@ -392,7 +407,13 @@ app.put("/api/events/:id", async (req, res) => {
   }
 });
 
-// Delete event
+/**
+ * Endpoint to delete an event
+ * @param {string} id - ID of the event to delete
+ * @returns {object} - JSON response indicating success or failure
+ * @throws {Error} - If an error occurs during the deletion process.
+ * @description - This endpoint deletes an event from the database using its ID
+ */
 app.delete("/api/events/:id", async (req, res) => {
   try {
     await eventSchema.findByIdAndDelete(req.params.id);
@@ -403,7 +424,13 @@ app.delete("/api/events/:id", async (req, res) => {
   }
 });
 
-// Get all events
+/**
+ * Endpoint to get a specific event by ID
+ * @param {string} id - ID of the event to retrieve
+ * @returns {object} - JSON response containing the event data
+ * @throws {Error} - If an error occurs during the retrieval process
+ * @description - This endpoint retrieves a specific event from the database using its ID.
+ */
 app.get("/api/events", async (req, res) => {
   try {
     const events = await eventSchema.find().sort({ date: -1 });
@@ -415,7 +442,13 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
-// Create submission endpoint
+/**
+ * Endpoint to submit a form with an optional file upload
+ * @param {object} req - Request object containing form data and file
+ * @returns {object} - JSON response indicating success or failure
+ * @throws {Error} - If an error occurs during the submission process
+ * @description - This endpoint handles form submissions with optional file uploads.
+ */
 app.post("/api/submit", upload.single("file"), async (req, res) => {
   try {
     const { eventId, type, name, email } = req.body;
@@ -482,7 +515,14 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
   }
 });
 
-// Get all submissions
+/**
+ * Endpoint to get all submissions
+ * @param {object} req - Request object
+ * @returns {array} - JSON response containing an array of submissions
+ * @throws {Error} - If an error occurs during the retrieval process
+ * @description - This endpoint retrieves all submissions from the database and sorts them by creation date in descending order.
+ * @requires auth - Middleware to authenticate the request
+ */
 app.get("/api/submissions", auth, async (req, res) => {
   try {
     const submissions = await submissionSchema.find().sort({ createdAt: -1 });
@@ -493,7 +533,14 @@ app.get("/api/submissions", auth, async (req, res) => {
   }
 });
 
-// Download file endpoint
+/**
+ * Endpoint to get a specific submission by ID
+ * @param {string} id - ID of the submission to retrieve
+ * @returns {object} - JSON response containing the submission data
+ * @throws {Error} - If an error occurs during the retrieval process
+ * @description - This endpoint retrieves a specific submission from the database using its ID.
+ * @requires auth - Middleware to authenticate the request
+ */
 app.get("/api/submissions/:id/file", async (req, res) => {
   try {
     const submission = await submissionSchema.findById(req.params.id);
@@ -513,11 +560,13 @@ app.get("/api/submissions/:id/file", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
+/**
+ * Endpoint to login a as administrator
+ * @param {object} req - Request object containing user data
+ * @returns {object} - JSON response indicating success or failure
+ * @throws {Error} - If an error occurs during the login process
+ * @description - This endpoint handles user login and password hashing.
+ */
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -545,7 +594,15 @@ app.get("/api/auth/verify", auth, (req, res) => {
 
 // Add this endpoint after your other endpoints
 
-// Endpoint to check Python environment
+/**
+ * Endpoint to check the Python environment and OpenRouter API key
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ * @returns {object} - JSON response indicating success or failure
+ * @throws {Error} - If an error occurs during the environment check
+ * @description - This endpoint checks the Python environment and OpenRouter API key configuration.
+ * @requires auth - Middleware to authenticate the request
+ */
 app.get("/api/check-python", auth, async (req, res) => {
   try {
     const path = require("path");
@@ -599,3 +656,10 @@ app.get("/api/check-python", auth, async (req, res) => {
     });
   }
 });
+
+// Listen for incoming requests on the specified port
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+

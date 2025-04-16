@@ -7,6 +7,8 @@ import "./styles/EventForms.css";
 const EventUpdate = () => {
   const { id } = useParams(); // Get the event ID from the URL
   const navigate = useNavigate();
+
+  // Instantiate form data state with empty strings
   const [formData, setFormData] = useState({
     courseName: "",
     venue: "",
@@ -14,8 +16,6 @@ const EventUpdate = () => {
     price: "",
     emailText: "",
   });
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     // Fetch the event details
@@ -49,6 +49,7 @@ const EventUpdate = () => {
     fetchEvent();
   }, [id]);
 
+  // Update form data on change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -65,10 +66,6 @@ const EventUpdate = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setMessage("Event updated successfully");
-      setTimeout(() => {
-        navigate("/admin"); // Redirect to admin page after showing success message
-      }, 1500);
     } catch (error) {
       console.error("Error updating event:", error);
       setError("Error updating event");
@@ -85,10 +82,6 @@ const EventUpdate = () => {
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <Form onSubmit={handleSubmit} className="event-form">
-        <Form.Group className="mb-3">
-          <Form.Label>Course Name</Form.Label>
-          <Form.Control
             type="text"
             name="courseName"
             value={formData.courseName}
