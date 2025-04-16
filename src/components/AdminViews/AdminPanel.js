@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./AdminPanel.css";
+import "./styles/AdminPanel.css"; // Import CSS for styling.
 
 // AdminPanel component is a dashboard for the admin user. It contains three cards that link to different admin views.
 const AdminPanel = () => {
@@ -10,7 +10,7 @@ const AdminPanel = () => {
   const cards = [
     {
       title: "Manage Events",
-      description: "Create, update, and delete course events",
+      description: "Create, update, and delete events",
       link: "/events",
       icon: "📅",
     },
@@ -32,21 +32,11 @@ const AdminPanel = () => {
     <div className="admin-container">
       <div className="admin-hero">
         <h1>Admin Dashboard</h1>
-        <p className="admin-tagline">Manage your events and submissions with ease</p>
+        <p className="admin-tagline">
+          Manage your events and submissions with ease
+        </p>
       </div>
 
-      <div className="admin-cards">
-        {/* Render cards in list */}
-        {cards.map((card, index) => (
-          <div key={index} className="admin-card">
-            <div className="admin-card-icon">{card.icon}</div>
-            <h3>{card.title}</h3>
-            <p>{card.description}</p>
-            <button className="admin-btn" onClick={() => navigate(card.link)}>
-              Access
-            </button>
-          </div>
-        ))}
       </div>
       <div className="page-padding-bottom"></div>
     </div>

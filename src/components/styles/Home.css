@@ -1,0 +1,125 @@
+/* Import shared styles */
+@import "./SharedStyles.css";
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 3rem 1rem;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(37, 117, 252, 0.2);
+  color: white;
+}
+
+.hero-section h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tagline {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  background-color: #ffd700;
+  color: #333;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  font-size: 1.1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.cta-button:hover {
+  background-color: #fff8dc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Feature cards - specific to Home */
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background: linear-gradient(145deg, #ffffff, #f0f4ff);
+  padding: 1.8rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border-top: 4px solid #6a11cb;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(37, 117, 252, 0.15);
+}
+
+.feature-card h3 {
+  color: #1a365d;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.feature-card p {
+  color: #4a5568;
+}
+
+@media (width <= 768px) {
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Override Bootstrap navbar styles */
+:root {
+  --primary-nav-color: #6a11cb;
+  --primary-nav-gradient: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+}
+
+/* Style for custom navbar and footer */
+.navbar.bg-primary {
+  background: var(--primary-nav-gradient) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand,
+.nav-link {
+  color: white !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  transform: translateY(-2px);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer styles to match navbar */
+.app-footer {
+  background: var(--primary-nav-gradient) !important;
+  color: white !important;
+  border-top: none !important;
+  padding: 1rem 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
