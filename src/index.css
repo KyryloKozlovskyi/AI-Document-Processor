@@ -39,10 +39,6 @@ html {
 .home-page .content-container {
   justify-content: center;
   align-items: center;
-  background-color: #f8f9fa;
-  background-image: 
-    linear-gradient(135deg, rgba(245, 247, 250, 0.8) 0%, rgba(171, 171, 171, 0.8) 100%);
-  box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
 }
 
 /* You need to add this class to your Home component */
