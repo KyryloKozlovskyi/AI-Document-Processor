@@ -9,7 +9,7 @@ const AdminPanel = () => {
   const cards = [
     {
       title: "Manage Events",
-      description: "Create, update, and delete course events",
+      description: "Create, update, and delete events",
       link: "/events",
       icon: "📅",
     },
@@ -36,17 +36,24 @@ const AdminPanel = () => {
         </p>
       </div>
 
-      <div className="admin-cards">
-        {cards.map((card, index) => (
-          <div key={index} className="admin-card">
-            <div className="admin-card-icon">{card.icon}</div>
-            <h3>{card.title}</h3>
-            <p>{card.description}</p>
-            <button className="admin-btn" onClick={() => navigate(card.link)}>
-              Access
-            </button>
-          </div>
-        ))}
+      <div className="admin-cards-container">
+        <div className="admin-cards">
+          {cards.map((card, index) => (
+            <div key={index} className="admin-card">
+              <div className="admin-card-content">
+                <div className="admin-card-icon">{card.icon}</div>
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
+                <button
+                  className="btn-primary"
+                  onClick={() => navigate(card.link)}
+                >
+                  Access
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="page-padding-bottom"></div>
     </div>

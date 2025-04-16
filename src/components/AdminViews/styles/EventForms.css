@@ -1,4 +1,4 @@
-.admin-container {
+.event-form-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
@@ -6,11 +6,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: calc(100vh - 100px);
+  width: 100%;
 }
 
-.admin-hero {
+.event-form-hero {
   text-align: center;
   padding: 3rem 1rem;
   margin-bottom: 3rem;
@@ -21,86 +22,74 @@
   width: 100%;
 }
 
-.admin-hero h1 {
+.event-form-hero h1 {
   font-size: 2.8rem;
   margin-bottom: 1rem;
   font-weight: 700;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.admin-tagline {
+.event-form-hero p {
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 1rem;
 }
 
-.admin-cards-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.admin-cards {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-top: 2rem;
-  width: 100%;
-}
-
-.admin-card {
+.event-form {
   background: white;
+  padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex: 1;
-  min-width: 300px;
-  max-width: 400px;
-  overflow: hidden;
+  margin-bottom: 2rem;
   border-top: 4px solid #6a11cb;
+  width: 100%;
+  /* Match the admin-card width from AdminPanel.css */
+  max-width: 100%;
 }
 
-.admin-card-content {
-  padding: 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.admin-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(37, 117, 252, 0.2);
-}
-
-.admin-card-icon {
-  font-size: 3rem;
+.form-group {
   margin-bottom: 1.5rem;
-  color: #6a11cb;
 }
 
-.admin-card h3 {
-  color: #1a365d;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
+.form-label {
   font-weight: 600;
+  color: #1a365d;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1.1rem;
 }
 
-.admin-card p {
-  color: #4a5568;
-  margin-bottom: 1.5rem;
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  color: #333;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+}
+
+.form-control:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.25);
+  background-color: white;
+}
+
+.form-control::placeholder {
+  color: #a0aec0;
+}
+
+textarea.form-control {
+  min-height: 120px;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   color: white;
   border: none;
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
+  padding: 0.8rem 2.5rem;
+  font-size: 1.1rem;
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -115,27 +104,37 @@
   box-shadow: 0 6px 15px rgba(37, 117, 252, 0.4);
 }
 
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(37, 117, 252, 0.3);
+.alert {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #c6f6d5;
+  color: #2f855a;
+  border: 1px solid #9ae6b4;
+}
+
+.alert-danger {
+  background-color: #fed7d7;
+  color: #c53030;
+  border: 1px solid #feb2b2;
 }
 
 @media (max-width: 768px) {
-  .admin-hero {
+  .event-form-hero {
     padding: 2rem 1rem;
   }
 
-  .admin-hero h1 {
+  .event-form-hero h1 {
     font-size: 2rem;
   }
 
-  .admin-cards {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .admin-card {
-    width: 100%;
-    max-width: 100%;
+  .event-form {
+    padding: 1.5rem;
   }
 }

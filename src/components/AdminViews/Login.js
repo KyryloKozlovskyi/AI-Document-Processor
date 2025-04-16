@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Alert } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAdmin } from "./AdminContext";
@@ -57,7 +57,7 @@ const Login = () => {
             required
           />
         </Form.Group>
-        
+
         <Form.Group className="mb-3" controlId="formPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -70,7 +70,7 @@ const Login = () => {
             required
           />
         </Form.Group>
-        
+
         <Button variant="primary" type="submit">
           Login
         </Button>
