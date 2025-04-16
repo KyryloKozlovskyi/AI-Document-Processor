@@ -2,23 +2,26 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
 }
 
-/* App container takes full viewport */
+html {
+  height: 100%;
+}
+
+/* App container takes full viewport and enables flex sticky footer pattern */
 .app-container {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 /* Full-page content container styling */
 .content-container {
-  flex: 1;
+  flex: 1; /* This allows the content to expand and push footer down */
   width: 100%;
   margin: 0;
   padding: 0;
@@ -27,16 +30,19 @@ body {
   overflow: auto; /* Allow content to scroll if needed */
 }
 
+/* Remove any fixed padding that was causing overlap issues */
+.page-padding-bottom {
+  padding-bottom: 0;
+}
+
 /* Special styling for home page */
 .home-page .content-container {
   justify-content: center;
   align-items: center;
   background-color: #f8f9fa;
   background-image: 
-    linear-gradient(135deg, rgba(245, 247, 250, 0.8) 0%, rgba(171, 171, 171, 0.8) 100%),
-    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%234299e1' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    linear-gradient(135deg, rgba(245, 247, 250, 0.8) 0%, rgba(171, 171, 171, 0.8) 100%);
   box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
-  overflow: hidden; /* Prevent scrolling on home page */
 }
 
 /* You need to add this class to your Home component */
@@ -45,9 +51,4 @@ body {
   max-width: 1200px;
   z-index: 1;
   padding: 0 2rem;
-}
-
-/* Add padding to ensure content isn't hidden behind footer */
-.page-padding-bottom {
-  padding-bottom: 60px;
 }
