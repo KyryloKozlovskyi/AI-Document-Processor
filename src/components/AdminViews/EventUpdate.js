@@ -6,6 +6,8 @@ import { Container, Form, Button } from 'react-bootstrap';
 const EventUpdate = () => {
   const { id } = useParams(); // Get the event ID from the URL
   const navigate = useNavigate();
+
+  // Instantiate form data state with empty strings
   const [formData, setFormData] = useState({
     courseName: '',
     venue: '',
@@ -13,6 +15,8 @@ const EventUpdate = () => {
     price: '',
     emailText: ''
   });
+
+  // Error and message states
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -31,6 +35,7 @@ const EventUpdate = () => {
     fetchEvent();
   }, [id]);
 
+  // Update form data on change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -49,7 +54,7 @@ const EventUpdate = () => {
       });
       console.log('Event updated successfully:', response.data);
       setMessage('Event updated successfully');
-      navigate('/admin'); // Redirect to admin page
+      navigate('/admin'); // Redirect to admin page on success
     } catch (error) {
       console.error('Error updating event:', error);
       setError('Error updating event');
@@ -60,6 +65,7 @@ const EventUpdate = () => {
     <Container className="root-container">
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
+      {/* Form to update event details */}
       <Form onSubmit={handleSubmit} className="card p-4 shadow-sm">
         <div className="mb-3">
           <label className="form-label">Course Name:</label>

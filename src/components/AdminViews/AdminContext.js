@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { Spinner } from "react-bootstrap";
 
 const AdminContext = createContext(null); // Initialize context
 
@@ -8,6 +9,7 @@ export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Check if the token is present in localStorage when the component starts
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -43,8 +45,15 @@ export const AdminProvider = ({ children }) => {
     setIsAdmin(false);
   };
 
+  // Loading state to show a spinner while verifying the token
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   // Return the context provider with the value of the context
@@ -55,4 +64,6 @@ export const AdminProvider = ({ children }) => {
   );
 };
 
+// Custom hook to use the AdminContext in other components
+// This allows you to access the context value without needing to use useContext every time
 export const useAdmin = () => useContext(AdminContext);
