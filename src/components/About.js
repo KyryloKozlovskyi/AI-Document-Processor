@@ -3,7 +3,7 @@ import "./styles/About.css";
 
 const About = () => {
   return (
-    <div className="about-container">
+    <div className="about-container page-container">
       <div className="about-hero">
         <h1>About Our Project</h1>
         <p className="about-tagline">
@@ -14,16 +14,19 @@ const About = () => {
       <div className="project-info">
         <h2>The AI Document Processor</h2>
         <p>
-          This application was developed as a 3rd year final project at Atlantic Technological University, Galway.
-          It leverages modern artificial intelligence to streamline document processing workflows, 
-          enabling efficient analysis and management of PDF documents.
+          This application was developed as a 3rd year final project at Atlantic
+          Technological University, Galway. It leverages modern artificial
+          intelligence to streamline document processing workflows, enabling
+          efficient analysis and management of PDF documents.
         </p>
         <p>
-          Our system allows users to submit documents, automatically extracts text using OCR technology,
-          and provides AI-powered analysis of the document content. Administrators can manage submissions,
-          query the AI for specific information, and generate insights from processed documents.
+          Our system allows users to submit documents, automatically extracts
+          text using OCR technology, and provides AI-powered analysis of the
+          document content. Administrators can manage submissions, query the AI
+          for specific information, and generate insights from processed
+          documents.
         </p>
-        
+
         <h2>Key Technologies</h2>
         <div className="technologies">
           <span className="tech-badge">React</span>
@@ -47,7 +50,6 @@ const About = () => {
           <p>G00425385</p>
         </div>
       </div>
-      <div className="page-padding-bottom"></div>
     </div>
   );
 };

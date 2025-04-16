@@ -22,20 +22,21 @@
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   color: white;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
+  box-shadow: 0 8px 30px rgba(37, 117, 252, 0.2);
   width: 100%; /* Match full width like other pages */
   max-width: 1200px; /* Limit maximum width */
 }
 
 .submit-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 1rem;
-  color: white;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .submit-tagline {
-  font-size: 1.2rem;
-  color: #fff8dc;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2rem;
 }
 
@@ -94,9 +95,10 @@
   background-color: white;
 }
 
+/* Update the primary button styling to match the theme */
 .btn-primary {
-  background-color: #ffd700;
-  color: #333;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
   border: none;
   padding: 0.8rem 2rem;
   font-size: 1rem;
@@ -109,12 +111,18 @@
   margin-left: auto;
   margin-right: auto; /* Center the button */
   display: block;
+  box-shadow: 0 4px 10px rgba(37, 117, 252, 0.2);
 }
 
 .btn-primary:hover {
-  background-color: #fff8dc;
+  background: linear-gradient(135deg, #5a0cb6 0%, #1565e6 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgb(173 216 230 / 40%);
+  box-shadow: 0 6px 15px rgba(37, 117, 252, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(37, 117, 252, 0.3);
 }
 
 .btn-outline-primary {
@@ -132,18 +140,51 @@
 }
 
 .download-btn {
-  margin-bottom: 1rem;
-  background-color: white;
+  margin: 1.5rem auto 1.5rem auto;
+  background: white;
   color: #6a11cb;
   border: 2px solid #6a11cb;
   border-radius: 30px;
-  padding: 0.6rem 1.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
   transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(106, 17, 203, 0.15);
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.download-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
 }
 
 .download-btn:hover {
-  background-color: rgba(106, 17, 203, 0.1);
-  color: #6a11cb;
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(106, 17, 203, 0.25);
+}
+
+.download-btn:hover::before {
+  opacity: 1;
+}
+
+.download-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(106, 17, 203, 0.2);
 }
 
 .alert {

@@ -12,20 +12,22 @@
   text-align: center;
   padding: 3rem 1rem;
   margin-bottom: 3rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
+  box-shadow: 0 8px 30px rgba(37, 117, 252, 0.2);
+  color: white;
 }
 
 .about-hero h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 1rem;
-  color: #2d3748;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .about-tagline {
-  font-size: 1.2rem;
-  color: #4a5568;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 2rem;
 }
 
@@ -95,14 +97,4 @@
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
-}
-
-@media (width <= 768px) {
-  .about-hero {
-    padding: 2rem 1rem;
-  }
-
-  .about-hero h1 {
-    font-size: 2rem;
-  }
 }
