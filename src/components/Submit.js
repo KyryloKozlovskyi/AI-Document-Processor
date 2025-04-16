@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
-import "./Submit.css"; // Import the CSS file
+import "./styles/Submit.css"; // Import the CSS file
 
 const Submit = () => {
   const [events, setEvents] = useState([]);
