@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Table, Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Badge,
+  Button,
+  Form,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-import ChatPanel from "./ChatPanel"; // Import the ChatPanel component
+import ChatPanel from "./ChatPanel";
+import "./styles/SeeRecords.css"; // Import the updated CSS file
 
 const SeeRecords = () => {
   const [records, setRecords] = useState([]);
@@ -10,14 +19,12 @@ const SeeRecords = () => {
   const [loading, setLoading] = useState(true);
   const [filterBy, setFilterBy] = useState("date");
   const [events, setEvents] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(""); // State for selected course
+  const [selectedCourse, setSelectedCourse] = useState("");
 
-  // New state for analysis modal
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [analysisData, setAnalysisData] = useState(null);
   const [analyzingDocument, setAnalyzingDocument] = useState(false);
 
-  // State and ref for horizontal scrolling
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -29,7 +36,7 @@ const SeeRecords = () => {
     setIsDragging(true);
     setStartX(e.pageX - tableContainerRef.current.offsetLeft);
     setScrollLeft(tableContainerRef.current.scrollLeft);
-    tableContainerRef.current.style.cursor = 'grabbing';
+    tableContainerRef.current.style.cursor = "grabbing";
   };
 
   // Handle mouse move event for dragging
@@ -45,7 +52,7 @@ const SeeRecords = () => {
   const handleMouseUpOrLeave = () => {
     if (!tableContainerRef.current) return;
     setIsDragging(false);
-    tableContainerRef.current.style.cursor = 'grab';
+    tableContainerRef.current.style.cursor = "grab";
   };
 
   // Fetch events and records on component enter
@@ -75,9 +82,6 @@ const SeeRecords = () => {
           }
         );
 
-        // Debug
-        // console.log(response.data);
-        
         setRecords(response.data);
         setLoading(false);
       } catch (err) {
@@ -130,12 +134,11 @@ const SeeRecords = () => {
       setAnalysisData(response.data);
       setShowAnalysisModal(true);
       setAnalyzingDocument(false);
-
     } catch (err) {
       console.error("Error analyzing document:", err);
       setError(
         "Failed to analyze document: " +
-        (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message)
       );
       setAnalyzingDocument(false);
     }
@@ -181,7 +184,9 @@ const SeeRecords = () => {
 
   // Return error if any
   if (error) {
-    return <Container className="text-danger root-container" >{error}</Container>;
+    return (
+      <Container className="text-danger records-container">{error}</Container>
+    );
   }
 
   const filteredRecords = filterByCourse(
@@ -191,29 +196,36 @@ const SeeRecords = () => {
 
   // Render component
   return (
-    <Container className="root-container">
+    <div className="records-container">
+      <div className="records-hero">
+        <h1>Submission Records</h1>
+        <p>View and manage all student and company submissions</p>
+      </div>
 
       {/* ChatPanel tab displayed on page. */}
       <ChatPanel />
 
-      {/* Always render the table container to maintain ref connection */}
-      <div className="d-flex justify-content-between align-items-center my-4">
-        <h2>Submission Records</h2>
-        <div className="d-flex">
-          <Badge bg="primary m-2">Records: {filteredRecords.length}</Badge>
+      <div className="records-controls">
+        <div className="d-flex align-items-center">
+          <Badge bg="primary" className="me-2">
+            Records: {filteredRecords.length}
+          </Badge>
+        </div>
 
+        <div className="records-filters">
           {/* Filter and sort criteria */}
-          <Form.Group style={{ width: "200px", marginRight: "10px" }}>
+          <Form.Group style={{ width: "200px" }}>
             <Form.Select
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value)}
             >
-              <option value="date">Filter by Date</option>
-              <option value="name">Filter by Name</option>
-              <option value="type">Filter by Type</option>
-              <option value="eventId">Filter by Event</option>
+              <option value="date">Sort by Date</option>
+              <option value="name">Sort by Name</option>
+              <option value="type">Sort by Type</option>
+              <option value="eventId">Sort by Event</option>
             </Form.Select>
           </Form.Group>
+
           <Form.Group style={{ width: "200px" }}>
             <Form.Select
               value={selectedCourse}
@@ -238,11 +250,6 @@ const SeeRecords = () => {
         onMouseUp={handleMouseUpOrLeave}
         onMouseLeave={handleMouseUpOrLeave}
         style={{
-          overflowX: 'auto',
-          cursor: 'grab',
-          userSelect: 'none',
-          position: 'relative',
-          maxWidth: '100%',
           opacity: loading || analyzingDocument ? 0.6 : 1,
         }}
       >
@@ -345,10 +352,10 @@ const SeeRecords = () => {
       </div>
 
       {/* Keep the loading spinner as an overlay that doesn't remove the table */}
-      {(loading) && (
-        <div className="loading-overlay pt-5">
+      {loading && (
+        <div className="loading-overlay">
           <Spinner animation="border" role="status">
-            <span className="visually-hidden">Analyzing...</span>
+            <span className="visually-hidden">Loading...</span>
           </Spinner>
         </div>
       )}
@@ -373,7 +380,6 @@ const SeeRecords = () => {
                 <div className="markdown-content">
                   <ReactMarkdown>{analysisData.analysis}</ReactMarkdown>
                 </div>
-                <ReactMarkdown>{analysisData.analysis}</ReactMarkdown>
               </div>
             </div>
           ) : (
@@ -386,7 +392,7 @@ const SeeRecords = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };
 
