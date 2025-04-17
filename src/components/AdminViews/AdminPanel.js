@@ -9,19 +9,19 @@ const AdminPanel = () => {
   const cards = [
     {
       title: "Manage Events",
-      description: "Create, update, and delete events",
+      description: "Update or delete events",
       link: "/events",
       icon: "📅",
     },
     {
       title: "View Submissions",
-      description: "View and manage user submissions",
+      description: "View and manage submissions",
       link: "/records",
       icon: "📝",
     },
     {
       title: "Create Event",
-      description: "Create a new course event",
+      description: "Create new event",
       link: "/events/create",
       icon: "➕",
     },
@@ -31,9 +31,7 @@ const AdminPanel = () => {
     <div className="admin-container">
       <div className="admin-hero">
         <h1>Admin Dashboard</h1>
-        <p className="admin-tagline">
-          Manage your events and submissions with ease
-        </p>
+        <p className="admin-tagline">Manage your events and submissions</p>
       </div>
 
       <div className="admin-cards-container">

@@ -11,13 +11,15 @@ const Events = (props) => {
 
   // Check if props.myEvents is defined and is an array
   if (!props.myEvents || !Array.isArray(props.myEvents)) {
-    return <div className="events-container">
-      <div className="events-hero">
-        <h1>Events</h1>
-        <p>Manage your course events</p>
+    return (
+      <div className="events-container">
+        <div className="events-hero">
+          <h1>Events</h1>
+          <p>Manage your course events</p>
+        </div>
+        <p>No events available</p>
       </div>
-      <p>No events available</p>
-    </div>;
+    );
   }
 
   // Maps the event objects to EventItem components
@@ -25,21 +27,21 @@ const Events = (props) => {
     <div className="events-container">
       <div className="events-hero">
         <h1>Events</h1>
-        <p>Manage your course events</p>
+        <p>Manage your events</p>
       </div>
       <div className="events-list">
         <Row className="g-4 w-100">
           {props.myEvents.map((event) => (
-            <EventItem 
-              myEvent={event} 
+            <EventItem
+              myEvent={event}
               key={event._id}
-              ReloadData={props.ReloadData}   
+              ReloadData={props.ReloadData}
             />
           ))}
         </Row>
       </div>
     </div>
   );
-}
+};
 
 export default Events;

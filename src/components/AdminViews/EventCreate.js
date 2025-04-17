@@ -47,7 +47,7 @@ const EventCreate = () => {
     <div className="event-form-container">
       <div className="event-form-hero">
         <h1>Create New Event</h1>
-        <p>Add a new course event</p>
+        <p>Add a new event</p>
       </div>
 
       {message && <div className="alert alert-success">{message}</div>}

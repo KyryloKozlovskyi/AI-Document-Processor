@@ -199,7 +199,7 @@ const SeeRecords = () => {
     <div className="records-container">
       <div className="records-hero">
         <h1>Submission Records</h1>
-        <p>View and manage all student and company submissions</p>
+        <p>View and manage all personal and company submissions</p>
       </div>
 
       {/* ChatPanel tab displayed on page. */}
@@ -341,7 +341,7 @@ const SeeRecords = () => {
                       onClick={() => analyzeDocument(record._id)}
                       disabled={analyzingDocument}
                     >
-                      {analyzingDocument ? "Analyzing..." : "Analyze Document"}
+                      {analyzingDocument ? "Analyzing..." : "Analyze"}
                     </Button>
                   )}
                 </td>

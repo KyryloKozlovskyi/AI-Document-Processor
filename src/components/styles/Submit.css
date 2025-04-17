@@ -34,6 +34,8 @@
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(37, 117, 252, 0.2);
   color: white;
+  width: 100%;
+  max-width: 1200px; /* Match the form width */
 }
 
 .hero-section h1 {
@@ -53,7 +55,7 @@
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgb(0 0 0 / 12%);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   margin-bottom: 0;
   border-top: 4px solid #6a11cb;
   width: 100%;
@@ -61,18 +63,27 @@
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem; /* Increased spacing between form groups */
+  padding-bottom: 1.5rem; /* Added padding at bottom */
+  border-bottom: 1px solid rgba(106, 17, 203, 0.1); /* Subtle separator line */
+}
+
+.form-group:last-child {
+  border-bottom: none;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
 }
 
 .form-label {
   font-weight: 600;
   color: #333;
   margin-bottom: 0.5rem;
+  padding-top: 0.5rem; /* Added padding at top */
 }
 
 .submit-form .form-label {
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .form-control {
@@ -80,13 +91,13 @@
   border: 1px solid #e2e8f0;
   padding: 0.75rem;
   transition: all 0.3s ease;
-  background-color: #fff8dc;
+  background-color: #f8f9fa;
   color: #333;
 }
 
 .form-control:focus {
-  border-color: #1e90ff;
-  box-shadow: 0 0 0 3px rgb(30 144 255 / 25%);
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.25);
   background-color: white;
 }
 
@@ -100,7 +111,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 1.5rem; /* Added more space above button */
   width: auto;
   margin-left: auto;
   margin-right: auto;
@@ -119,6 +130,17 @@
   box-shadow: 0 2px 5px rgba(37, 117, 252, 0.3);
 }
 
+/* Form section headers to better organize content */
+.form-section-header {
+  font-weight: 700;
+  color: #1a365d;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(106, 17, 203, 0.2);
+}
+
+/* Other existing styles remain unchanged */
 .btn-outline-primary {
   background-color: transparent;
   color: #6a11cb;
@@ -186,6 +208,8 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
   font-weight: 500;
+  width: 100%;
+  max-width: 800px; /* Match form width */
 }
 
 .alert-success {
@@ -200,7 +224,7 @@
   border: 1px solid #feb2b2;
 }
 
-@media (width <=768px) {
+@media (max-width: 768px) {
   .root-container {
     padding: 1rem;
   }
@@ -209,11 +233,16 @@
     padding: 1.5rem;
   }
 
-  .submit-header {
+  .hero-section {
     padding: 1.5rem 1rem;
   }
 
-  .submit-header h1 {
+  .hero-section h1 {
     font-size: 1.8rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
   }
 }
