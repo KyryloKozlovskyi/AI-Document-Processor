@@ -342,7 +342,7 @@ const SeeRecords = () => {
       </div>
 
       {/* Keep the loading spinner as an overlay that doesn't remove the table */}
-      {(analyzingDocument || loading) && (
+      {(loading) && (
         <div className="loading-overlay pt-5">
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Analyzing...</span>

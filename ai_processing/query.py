@@ -49,7 +49,7 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=r'C:\Progr
     # Join all pages to one string and return
     return '\n\n'.join(all_text)
 
-def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
+def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
     """
     Query an AI model via OpenRouter API using the OpenAI client library.
     
@@ -81,7 +81,7 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
             },
             model=model,
             messages=[
-                {"role": "system", "content": "You are a helpful assistant with a commitment to providing high-effort, detailed responses. The context of this application is to process documents and provide analysis. The user may provide document text, and you should respond with comprehensive, thoughtful information regarding their query. Take your time to think through complex problems step by step and provide thorough explanations."},
+                {"role": "system", "content": "You are a helpful assistant with a commitment to providing high-effort, detailed responses. The context of this application is to process documents and provide analysis. The user may provide document text, and you should respond with comprehensive, thoughtful information regarding their query. Take your time to think through complex problems step by step and provide thorough explanations. Use only ASCII characters in your responses."},
                 {"role": "user", "content": prompt}
             ]
         )
@@ -94,7 +94,7 @@ def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
 
 if __name__ == "__main__":
     # Set up argument parser
-    parser = argparse.ArgumentParser(description="Query the DeepSeek model")
+    parser = argparse.ArgumentParser(description="Query the AI model")
     parser.add_argument("--query", "-q", type=str, help="The query/prompt to send to the model")
     parser.add_argument("--key", "-a", type=str, help="OpenRouter API key")
     parser.add_argument("--pdf", "-p", type=str, help="Optional: Path to PDF file to provide context")
@@ -129,7 +129,7 @@ Based on this document, please answer the following question:
             full_prompt = args.query
         
         # Return model response
-        response = query_deepseek(full_prompt)
+        response = query_model(full_prompt)
         print(response)
         # Return success
         sys.exit(0)

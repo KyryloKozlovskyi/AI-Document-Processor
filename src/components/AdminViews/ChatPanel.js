@@ -157,11 +157,11 @@ const ChatPanel = () => {
           <div className="form-group mt-3"></div>
 
           {/* Response display */}
-          {thinking && <p>Thinking...</p>}
           {error && <p className="error-message">{error}</p>}
           {chatResponse && (
             <div className="response-container">
               {/* Fix: Properly render the response object */}
+              {thinking && <p>Thinking...</p>}
               {!thinking && typeof chatResponse === "object" ? (
                 <div>
                   <p>

@@ -15,7 +15,8 @@ if api_key:
     # Print just the first few and last few characters for security
     print(f"API key starts with {api_key[:5]}... ends with ...{api_key[-5:]}")
 
-def query_deepseek(prompt, model="deepseek/deepseek-r1-distill-llama-70b:free"):
+# Deepseek model: deepseek/deepseek-r1-distill-llama-70b:free
+def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
     """
     Query an AI model via OpenRouter API using the OpenAI client library.
     
@@ -125,7 +126,7 @@ To set up the API key:
 
 if __name__ == "__main__":
     # Set up argument parser
-    parser = argparse.ArgumentParser(description="Query the DeepSeek model")
+    parser = argparse.ArgumentParser(description="Query the AI model")
     parser.add_argument("--query", "-q", type=str, help="The query/prompt to send to the model")
     args = parser.parse_args()
     
@@ -137,7 +138,7 @@ if __name__ == "__main__":
     
     try:
         # Return model response
-        response = query_deepseek(args.query)
+        response = query_model(args.query)
         print(response)
         # Return success
         sys.exit(0)
