@@ -6,9 +6,9 @@ import tempfile
 import sys
 import argparse
 
-# Import the query_deepseek function
+# Import the query_model function
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from query_deepseek import query_deepseek
+from query_deepseek import query_model
 
 # Set the path to the Tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -29,7 +29,8 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=None):
     # Create temporary directory to store images
     with tempfile.TemporaryDirectory() as temp_dir:
         # Convert PDF to images
-        print(f"Converting PDF: {pdf_path} to images...")
+        # Debug
+        # print(f"Converting PDF: {pdf_path} to images...")
         # Specify poppler_path for Windows
         images = convert_from_path(pdf_path, dpi=dpi, poppler_path=poppler_path)
         
@@ -41,7 +42,8 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=None):
             image.save(temp_img_path, 'PNG')
             
             # Apply OCR
-            print(f"Processing page {i+1}/{len(images)}...")
+            # Debug
+            # print(f"Processing page {i+1}/{len(images)}...")
             text = pytesseract.image_to_string(Image.open(temp_img_path), lang=lang)
             all_text.append(text)
             
@@ -73,7 +75,8 @@ def process_pdf_directory(directory_path, output_directory=None, lang='eng', pop
     for filename in os.listdir(directory_path):
         if filename.lower().endswith('.pdf'):
             pdf_path = os.path.join(directory_path, filename)
-            print(f"Processing {filename}...")
+            # Debug
+            # print(f"Processing {filename}...")
             
             try:
                 # Extract text from PDF
@@ -86,7 +89,8 @@ def process_pdf_directory(directory_path, output_directory=None, lang='eng', pop
                 with open(txt_path, 'w', encoding='utf-8') as txt_file:
                     txt_file.write(text)
                 
-                print(f"Successfully created {txt_filename}")
+                # Debug
+                # print(f"Successfully created {txt_filename}")
                 
                 # Analyze with DeepSeek if requested
                 if analyze:
@@ -94,7 +98,9 @@ def process_pdf_directory(directory_path, output_directory=None, lang='eng', pop
                                               os.path.splitext(filename)[0] + '_analysis.txt'))
                 
             except Exception as e:
+                print("Sorry, I encountered an error while processing the PDF file.")
                 print(f"Error processing {filename}: {e}")
+                print(f"Please try again later.")
 
 
 def analyze_text_with_deepseek(text, output_file=None, prompt_prefix=""):
@@ -141,10 +147,8 @@ Please be concise but thorough in your analysis:"""
     
     prompt = f"{prompt_prefix}\n\n{analysis_text}"
     
-    print("Analyzing extracted text with DeepSeek AI...")
-    
     # Call the DeepSeek model
-    analysis = query_deepseek(prompt)
+    analysis = query_model(prompt)
     
     # Save to file if output path specified
     if output_file:
@@ -172,7 +176,7 @@ if __name__ == "__main__":
     
     # For single file
     if os.path.isfile(pdf_path):
-        print(f"Processing single file: {pdf_path}")
+        # print(f"Processing single file: {pdf_path}")
         text = extract_text_from_pdf(pdf_path, poppler_path=poppler_path)
         
         # Save extracted text to file if not in direct output mode
@@ -186,14 +190,15 @@ if __name__ == "__main__":
             with open(txt_path, 'w', encoding='utf-8') as txt_file:
                 txt_file.write(text)
             
-            print(f"Extracted text saved to {txt_path}")
+            # Debug
+            # print(f"Extracted text saved to {txt_path}")
         
         # Analyze with DeepSeek if requested
         if args.analyze or args.direct_output:
             if args.direct_output:
                 # Output directly to stdout instead of saving to file
                 analysis = analyze_text_with_deepseek(text)
-                print(analysis)  # This will be captured by the Node.js process
+                print(analysis)  # This will be captured by Node.js
             else:
                 analysis_file = os.path.join(
                     args.output if args.output else os.path.dirname(pdf_path), 
@@ -203,7 +208,8 @@ if __name__ == "__main__":
     
     # For a directory of PDFs
     elif os.path.isdir(pdf_path):
-        print(f"Processing directory: {pdf_path}")
+        # Debug
+        # print(f"Processing directory: {pdf_path}")
         process_pdf_directory(pdf_path, args.output, poppler_path=poppler_path, analyze=args.analyze)
     
     else:

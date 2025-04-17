@@ -10,13 +10,12 @@ load_dotenv()
 
 # Get API key from environment variable
 api_key = os.getenv("OPENROUTER_API_KEY", None)
-print(f"API key loaded: {'Yes' if api_key else 'No'}")
-if api_key:
-    # Print just the first few and last few characters for security
-    print(f"API key starts with {api_key[:5]}... ends with ...{api_key[-5:]}")
+
+# Debug: Check if API key is loaded
+# print(f"API key loaded: {'Yes' if api_key else 'No'}")
 
 # Deepseek model: deepseek/deepseek-r1-distill-llama-70b:free
-def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
+def query_model(prompt, model="meta-llama/llama-4-maverick:free"):
     """
     Query an AI model via OpenRouter API using the OpenAI client library.
     
@@ -28,8 +27,6 @@ def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
         str: The model's response
     """
     try:
-        # If we don't have an API key, use our fallback
-        print(f"Api_key: {api_key}")
         if not api_key:
             print("No OpenRouter API key found. Using fallback analysis.")
             return fallback_analysis(prompt)
@@ -41,7 +38,8 @@ def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
         )
         
         # Make the API request
-        print(f"Sending request to OpenRouter API for model: {model}")
+        # Debug
+        # print(f"Sending request to OpenRouter API for model: {model}")
         completion = client.chat.completions.create(
             extra_headers={
                 "HTTP-Referer": "https://ai-document-processor.com",  # Replace with your actual domain
@@ -139,7 +137,7 @@ if __name__ == "__main__":
     try:
         # Return model response
         response = query_model(args.query)
-        print(response)
+        # print(response) # Print is picked up by Node.js process
         # Return success
         sys.exit(0)
     except Exception as e:

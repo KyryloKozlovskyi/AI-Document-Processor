@@ -49,7 +49,7 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=r'C:\Progr
     # Join all pages to one string and return
     return '\n\n'.join(all_text)
 
-def query_model(prompt, model="google/gemini-2.0-flash-exp:free"):
+def query_model(prompt, model="meta-llama/llama-4-maverick:free"):
     """
     Query an AI model via OpenRouter API using the OpenAI client library.
     

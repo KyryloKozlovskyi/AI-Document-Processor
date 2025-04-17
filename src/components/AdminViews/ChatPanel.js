@@ -158,7 +158,7 @@ const ChatPanel = () => {
 
           {/* Response display */}
           {error && <p className="error-message">{error}</p>}
-          {chatResponse && (
+          {thinking || (chatResponse && (
             <div className="response-container">
               {/* Fix: Properly render the response object */}
               {thinking && <p>Thinking...</p>}
@@ -171,7 +171,7 @@ const ChatPanel = () => {
                 </div>
               ) : null}
             </div>
-          )}
+          ))}
         </form>
       </div>
     </div>
