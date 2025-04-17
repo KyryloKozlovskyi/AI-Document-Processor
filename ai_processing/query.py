@@ -27,7 +27,8 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=r'C:\Progr
     # Create temporary directory to store images
     with tempfile.TemporaryDirectory() as temp_dir:
         # Convert PDF to images
-        print(f"Converting PDF: {pdf_path} to images...")
+        # Debug
+        # print(f"Converting PDF: {pdf_path} to images...")
         # Specify poppler_path for Windows
         images = convert_from_path(pdf_path, dpi=dpi, poppler_path=poppler_path)
         
@@ -39,7 +40,8 @@ def extract_text_from_pdf(pdf_path, lang='eng', dpi=300, poppler_path=r'C:\Progr
             image.save(temp_img_path, 'PNG')
             
             # Apply OCR
-            print(f"Processing page {i+1}/{len(images)}...")
+            # Debug
+            # print(f"Processing page {i+1}/{len(images)}...")
             text = pytesseract.image_to_string(Image.open(temp_img_path), lang=lang)
             all_text.append(text)
             
@@ -109,11 +111,12 @@ if __name__ == "__main__":
         # If PDF file is provided, extract text and include it in the prompt
         pdf_text = ""
         if args.pdf and os.path.isfile(args.pdf):
-            print(f"Extracting text from PDF: {args.pdf}")
+            # Debug
+            # print(f"Extracting text from PDF: {args.pdf}")
             pdf_text = extract_text_from_pdf(args.pdf)
             
-            # Truncate PDF text if too long (most models have token limits)
-            MAX_CHARS = 10000  # Approximate limit - adjust as needed
+            # Truncate PDF text if too long (in case of token limits)
+            MAX_CHARS = 20000
             if len(pdf_text) > MAX_CHARS:
                 pdf_text = pdf_text[:MAX_CHARS] + "...[text truncated due to length]"
             

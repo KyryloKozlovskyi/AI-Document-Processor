@@ -154,7 +154,8 @@ Please be concise but thorough in your analysis:"""
     if output_file:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(analysis)
-        print(f"Analysis saved to {output_file}")
+        # Debug
+        # print(f"Analysis saved to {output_file}")
     
     return analysis
 
