@@ -76,7 +76,7 @@ const ChatPanel = () => {
       console.error("Error with chatbot:", err);
       setError(
         "Failed to analyze document: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
       setThinking(false);
     }
@@ -129,12 +129,12 @@ const ChatPanel = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <input
-              type="text"
+            <textarea
               id="userInput"
               className="form-control"
               placeholder="Type your question here..."
-            />
+              rows="3"
+            ></textarea>
           </div>
 
           {/* Add dropdown for submissions */}
@@ -158,10 +158,10 @@ const ChatPanel = () => {
 
           {/* Response display */}
           {error && <p className="error-message">{error}</p>}
-          {thinking || (chatResponse && (
+          {thinking ? <ReactMarkdown>Thinking...</ReactMarkdown> : null}
+          {!thinking && chatResponse ? (
             <div className="response-container">
               {/* Fix: Properly render the response object */}
-              {thinking && <p>Thinking...</p>}
               {!thinking && typeof chatResponse === "object" ? (
                 <div>
                   <p>
@@ -171,7 +171,7 @@ const ChatPanel = () => {
                 </div>
               ) : null}
             </div>
-          ))}
+          ) : null}
         </form>
       </div>
     </div>
