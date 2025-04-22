@@ -83,7 +83,7 @@ def query_model(prompt, model="meta-llama/llama-4-maverick:free"):
             },
             model=model,
             messages=[
-                {"role": "system", "content": "You are a helpful assistant with a commitment to providing high-effort, detailed responses. The context of this application is to process documents and provide analysis. The user may provide document text, and you should respond with comprehensive, thoughtful information regarding their query. Take your time to think through complex problems step by step and provide thorough explanations. Use only ASCII characters in your responses."},
+                {"role": "system", "content": "You are a helpful assistant with a commitment to providing high-effort, detailed responses. The context of this application is to process documents and provide analysis. The user may provide document text, and you should respond with a concise response regarding their query, unless more detail is wanted."},
                 {"role": "user", "content": prompt}
             ]
         )

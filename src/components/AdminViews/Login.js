@@ -70,10 +70,12 @@ const Login = () => {
             required
           />
         </Form.Group>
-
+        {/* Add button centering styles */}
+        <div className="d-flex justify-content-center mb-3">
         <Button variant="primary" type="submit">
           Login
         </Button>
+        </div>
       </Form>
     </div>
   );
