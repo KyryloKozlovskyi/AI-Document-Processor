@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="app-footer text-center">
       <div className="text-center p-3">
-        © 2025 Copyright: Transaction Website
+        © 2025 Copyright: AI Document Processor
       </div>
     </footer>
   );

@@ -28,7 +28,7 @@ const Home = () => {
         </div>
         <div className="feature-card">
           <h3>Admin Controls</h3>
-          <p>Powerful tools for administrators to manage the system</p>
+          <p>Powerful businesstools for administrators to manage the system</p>
         </div>
       </div>
     </div>
