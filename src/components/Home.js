@@ -10,7 +10,7 @@ const Home = () => {
       <div className="hero-section">
         <h1>AI Document Processor</h1>
         <p className="tagline">
-          Streamline your document processing with the power of AI
+          Streamline your event and document management with the power of AI
         </p>
         <button className="cta-button" onClick={() => navigate("/submit")}>
           Get Started
@@ -19,16 +19,16 @@ const Home = () => {
 
       <div className="features-section">
         <div className="feature-card">
-          <h3>Submit Documents</h3>
-          <p>Upload your files for intelligent processing and analysis</p>
+          <h3>Submit Forms</h3>
+          <p>Store, organize, and analyze form submissions with AI</p>
         </div>
         <div className="feature-card">
           <h3>View Records</h3>
-          <p>Access and manage all your processed documents in one place</p>
+          <p>Access and manage all your submissions in one place</p>
         </div>
         <div className="feature-card">
           <h3>Admin Controls</h3>
-          <p>Powerful businesstools for administrators to manage the system</p>
+          <p>Powerful tools for submission management</p>
         </div>
       </div>
     </div>

@@ -107,10 +107,8 @@ const Submit = () => {
   return (
     <div className="submit-container page-container">
       <div className="hero-section">
-        <h1>Document Submission</h1>
-        <p className="tagline">
-           Submit your documents for processing and analysis
-        </p>
+        <h1>Form Submission</h1>
+        <p className="tagline">Submit your form for further processing</p>
       </div>
 
       {message && <div className="alert alert-success">{message}</div>}

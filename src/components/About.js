@@ -7,36 +7,37 @@ const About = () => {
       <div className="about-hero">
         <h1>About Our Project</h1>
         <p className="about-tagline">
-          AI-powered document processing designed for educational institutions
+          AI-powered event management system with form processing functionality
+          designed for small businesses
         </p>
       </div>
 
       <div className="project-info">
-        <h2>The AI Document Processor</h2>
+        <h2>The AI-Document Processor</h2>
         <p>
           This application was developed as a 3rd year final project at Atlantic
-          Technological University, Galway. It leverages modern artificial
-          intelligence to streamline document processing workflows, enabling
-          efficient analysis and management of PDF documents.
+          Technological University, Galway. The AI-Document Processor harnesses
+          AI to streamline form and PDF analysis—helping you organize and
+          understand your data faster.
         </p>
         <p>
-          Our system allows users to submit documents, automatically extracts
-          text using OCR technology, and provides AI-powered analysis of the
-          document content. Administrators can manage submissions, query the AI
-          for specific information, and generate insights from processed
-          documents.
+          Our system allows users to submit forms and pdf documents,
+          automatically extracts text using Tesseract OCR, and provides
+          AI-powered analysis of the document content. Administrators can manage
+          submissions, query the AI for specific information, and generate
+          insights from processed documents.
         </p>
 
         <h2>Key Technologies</h2>
         <div className="technologies">
           <span className="tech-badge">React</span>
-          <span className="tech-badge">Node.js</span>
-          <span className="tech-badge">Express</span>
-          <span className="tech-badge">MongoDB</span>
-          <span className="tech-badge">Python</span>
-          <span className="tech-badge">OCR</span>
-          <span className="tech-badge">OpenRouter AI</span>
-          <span className="tech-badge">Docker</span>
+          <span className="tech-badge">Node</span>
+          <span className="tech-badge">MongoDB </span>
+          <span className="tech-badge">OpenRouter API</span>
+          <span className="tech-badge">Llama 4 Maverick</span>
+          <span className="tech-badge">Tesseract OCR</span>
+          <span className="tech-badge">Resend</span>
+          <span className="tech-badge">JWT</span>
         </div>
       </div>
 
