@@ -25,6 +25,11 @@ WORKDIR /app
 # Copy the entire app first
 COPY . .
 
+# Install Node.js dependencies in the backend directory
+WORKDIR /app
+RUN npm install --legacy-peer-deps --no-fund --no-audit
+RUN npm install dotenv express cors body-parser mongoose multer resend jsonwebtoken bcryptjs
+
 # Create requirements.txt if it doesn't exist
 RUN mkdir -p ai_processing
 RUN if [ ! -f "ai_processing/requirements.txt" ]; then \
