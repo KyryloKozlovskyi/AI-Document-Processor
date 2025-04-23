@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import api from "../utils/api";
-import "./styles/Submit.css";
-import API_URL from "../config";
+import axios from "axios";
+import "./styles/Submit.css"; // Import the CSS file
 
 const Submit = () => {
   const [events, setEvents] = useState([]);
@@ -17,7 +16,7 @@ const Submit = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await api.get("/api/events");
+        const response = await axios.get("http://localhost:5000/api/events");
         setEvents(response.data);
       } catch (err) {
         console.error("Events fetch error:", err);
@@ -78,11 +77,15 @@ const Submit = () => {
         data.append("file", formData.file);
       }
 
-      const response = await api.post("/api/submit", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/submit",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       setMessage(response.data.message);
       setFormData({
@@ -100,8 +103,6 @@ const Submit = () => {
       console.error("Submission error:", err);
     }
   };
-
-  const downloadButtonUrl = `${API_URL}/companyform`;
 
   return (
     <div className="submit-container page-container">
@@ -195,7 +196,7 @@ const Submit = () => {
               <Button
                 variant="outline-primary"
                 className="download-btn"
-                onClick={() => window.open(downloadButtonUrl)}
+                onClick={() => window.open("http://localhost:5000/companyform")}
               >
                 Download PDF Form
               </Button>

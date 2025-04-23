@@ -1,8 +1,0 @@
-node_modules
-__pycache__
-*.pyc
-.git
-.env
-.DS_Store
-uploads/*
-!uploads/.gitkeep

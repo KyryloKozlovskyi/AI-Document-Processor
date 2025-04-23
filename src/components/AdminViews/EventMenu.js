@@ -1,7 +1,7 @@
 // necessary imports
 import Events from "./Events";
 import { useEffect, useState } from "react";
-import api from "../../utils/api"; // Import the API utility
+import axios from "axios";
 
 const EventMenu = () => {
   // store events as JSON
@@ -12,11 +12,14 @@ const EventMenu = () => {
     Reload();
   }, []);
 
-  // Update the reload function
+  // axios get request to get events from database
   function Reload() {
     console.log("Reloading events");
-    api
-      .get("/api/events")
+    axios.get('http://localhost:5000/api/events', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
       .then((response) => {
         // log response
         console.log(response.data);
@@ -25,15 +28,15 @@ const EventMenu = () => {
       .catch((error) => {
         console.log("Error loading events: ", error);
       });
-  }
+  };
 
   return (
     // return event list
-    <div className="root-container">
+    <div className="root-container" >
       {/* display events */}
       <Events myEvents={events} ReloadData={Reload} />
     </div>
   );
-};
+}
 
 export default EventMenu;
