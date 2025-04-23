@@ -408,41 +408,6 @@ app.put("/api/events/:id", async (req, res) => {
 });
 
 /**
- * Endpoint to delete an event
- * @param {string} id - ID of the event to delete
- * @returns {object} - JSON response indicating success or failure
- * @throws {Error} - If an error occurs during the deletion process.
- * @description - This endpoint deletes an event from the database using its ID
- */
-app.delete("/api/events/:id", async (req, res) => {
-  try {
-    await eventSchema.findByIdAndDelete(req.params.id);
-    res.status(204).end();
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    res.status(500).json({ message: "Error deleting event" });
-  }
-});
-
-/**
- * Endpoint to get a specific event by ID
- * @param {string} id - ID of the event to retrieve
- * @returns {object} - JSON response containing the event data
- * @throws {Error} - If an error occurs during the retrieval process
- * @description - This endpoint retrieves a specific event from the database using its ID.
- */
-app.get("/api/events", async (req, res) => {
-  try {
-    const events = await eventSchema.find().sort({ date: -1 });
-    console.log(events);
-    res.json(events);
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    res.status(500).json({ message: "Error fetching events" });
-  }
-});
-
-/**
  * Endpoint to submit a form with an optional file upload
  * @param {object} req - Request object containing form data and file
  * @returns {object} - JSON response indicating success or failure
@@ -557,6 +522,16 @@ app.get("/api/submissions/:id/file", async (req, res) => {
   } catch (error) {
     console.error("Error downloading file:", error);
     res.status(500).json({ message: "Error downloading file" });
+  }
+});
+
+app.delete("/api/submissions/:id", async (req, res) => {
+  try {
+    await submissionSchema.findByIdAndDelete(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    console.error("Error deleting submission:", error);
+    res.status(500).json({ message: "Error deleting submission" });
   }
 });
 

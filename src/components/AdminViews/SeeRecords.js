@@ -68,6 +68,28 @@ const SeeRecords = () => {
     fetchEvents();
   }, []);
 
+  // Function to delete a submission
+  const deleteSubmission = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this submission? This action cannot be undone."
+    );
+    if (!confirmDelete) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/submissions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setRecords(records.filter((record) => record._id !== id));
+    } catch (err) {
+      console.error("Error deleting submission:", err);
+      setError("Failed to delete submission: " + err.message);
+    }
+  };
+
   // Fetch records on component enter
   useEffect(() => {
     const fetchRecords = async () => {
@@ -138,7 +160,7 @@ const SeeRecords = () => {
       console.error("Error analyzing document:", err);
       setError(
         "Failed to analyze document: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
       setAnalyzingDocument(false);
     }
@@ -265,6 +287,7 @@ const SeeRecords = () => {
               <th>Submitted At</th>
               <th>Paid</th>
               <th>Actions</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -344,6 +367,17 @@ const SeeRecords = () => {
                       {analyzingDocument ? "Analyzing..." : "Analyze"}
                     </Button>
                   )}
+                </td>
+                <td>
+                  {/* New column with analyze button - only show for records with files */}
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => deleteSubmission(record._id)}
+                    disabled={analyzingDocument}
+                  >
+                    {"Delete"}
+                  </Button>
                 </td>
               </tr>
             ))}
