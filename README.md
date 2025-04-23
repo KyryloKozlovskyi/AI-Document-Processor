@@ -1,6 +1,6 @@
 # AI Document Processor
 
-AI Document Processor is an advanced event management system with AI-powered form processing capabilities designed for small businesses. The application allows users to submit forms and PDF documents, which are automatically analyzed using artificial intelligence to extract and process relevant information.
+AI Document Processor is an advanced event management system with AI-powered form processing capabilities designed for small businesses. The application allows users to submit forms and PDF documents, which are analysed and summarised using artificial intelligence to extract and process relevant information.
 
 ## 📋 Table of Contents
 
@@ -20,7 +20,7 @@ AI Document Processor is an advanced event management system with AI-powered for
 
 - **Event Management**: Create, update, and delete events
 - **Form Submissions**: Accept submissions with optional PDF file uploads
-- **AI Document Analysis**: Automatically analyze and extract information from PDF documents
+- **AI Document Analysis**: Automatically analyse and extract information from PDF documents
 - **AI Query Interface**: Ask questions about submitted documents using natural language
 - **Authentication**: Secure admin access with JWT authentication
 - **Email Notifications**: Automatic confirmation emails to users upon submission
@@ -157,7 +157,7 @@ npm start
 
 ### AI Processing Endpoints
 
-- `GET /analyze/:submissionId` - Analyze a PDF submission (requires authentication)
+- `GET /analyze/:submissionId` - analyse a PDF submission (requires authentication)
 - `GET /query/:query` - Query the AI model with a specified query (requires authentication)
 - `GET /api/check-python` - Check Python environment configuration (requires authentication)
 
@@ -167,7 +167,7 @@ npm start
 
 ## 🧪 Testing
 
-The project includes HTTP-based API tests located in the `Testing/endpoint-testing` directory. You can run these tests using VS Code's REST Client extension or any other HTTP client such as Postman.
+The project includes HTTP-based API tests located in the `Testing/endpoint-testing` directory. You can run these tests using VS Code's REST Client extension (by Hauchao Mao) or any HTTP client such as Postman.
 
 Example test files:
 - `event-endpoint-tests.http` - Tests for event-related endpoints
