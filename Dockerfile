@@ -25,16 +25,14 @@ WORKDIR /app
 # Copy the entire app first
 COPY . .
 
-# Ensure models have correct filenames
+# Ensure models directory exists - but don't try to copy individual files
 RUN mkdir -p /app/backend/models
-COPY backend/models/event.js /app/backend/models/event.js
-COPY backend/models/submission.js /app/backend/models/submission.js
-COPY backend/models/user.js /app/backend/models/User.js
 
 # Fix case sensitivity issues in require statements
 RUN if [ -f "backend/server.js" ]; then \
     sed -i 's/\.\/models\/Event/\.\/models\/event/g' backend/server.js; \
-    sed -i 's/\.\/models\/Submission/\.\/models\/submission/g' backend/server.js; \
+    sed -i 's/\.\/models\/Submission/\.\/models\/submission/g' backend.server.js; \
+    sed -i 's/\.\/models\/User/\.\/models\/User/g' backend/server.js; \
     fi
 
 # Install Node.js dependencies in the backend directory
