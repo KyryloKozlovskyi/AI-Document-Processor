@@ -1,0 +1,11 @@
+// Below are tests to check the functionality of the Python environment and the query endpoint.
+
+// Check Python environment
+GET http://localhost:5000/api/check-python
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Test the query endpoint with direct question
+GET http://localhost:5000/query/What%20is%20the%20largest%20mammal%20on%20earth
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY

@@ -1,0 +1,72 @@
+// Below are the test cases to check the functionality of the event endpoints. These tests cover the CRUD operations (GET, POST, PUT, PATCH, DELETE) and analysis of submissions and authentication.
+
+// Test invalid authentication token
+GET http://localhost:5000/api/submissions/6809353e799d4bc8e3608d78
+Authorization: Bearer invalid_token
+
+###
+
+// Test invalid event ID retrieval
+GET http://localhost:5000/api/events/invalid_event_id
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Submit a form submission
+POST http://localhost:5000/api/submit
+Content-Type: application/json
+
+{
+    "eventId": "67b33a06ec0a062588ab1b05",
+    "type": "person",
+    "name": "Test User",
+    "email": "test@mail.com"
+}
+
+###
+
+// Get all submissions
+GET http://localhost:5000/api/submissions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Download a specific submission's file
+GET http://localhost:5000/api/submissions/6807d4596b185b445be058e2/file
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Update a submission's payment status
+PATCH http://localhost:5000/api/submissions/6809353e799d4bc8e3608d78
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+Content-Type: application/json
+
+{
+    "paid": true
+}
+
+###
+
+// Delete a submission
+DELETE http://localhost:5000/api/submissions/6809353e799d4bc8e3608d78
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Analyse a submission's PDF
+GET http://localhost:5000/analyze/6807d4596b185b445be058e2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Analyse a submission without a PDF
+// This will return a 500 error as there is no PDF to analyse
+GET http://localhost:5000/analyze/6809353e799d4bc8e3608d78
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Query AI about a submission document
+GET http://localhost:5000/query/Summarize%20this%20document?submissionId=6807d4596b185b445be058e2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY

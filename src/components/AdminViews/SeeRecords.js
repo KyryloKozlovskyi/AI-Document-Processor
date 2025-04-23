@@ -378,6 +378,7 @@ const SeeRecords = () => {
                   >
                     {"Delete"}
                   </Button>
+                  {record._id}
                 </td>
               </tr>
             ))}

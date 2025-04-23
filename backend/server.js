@@ -336,7 +336,7 @@ app.put("/api/events/:id", async (req, res) => {
  * @throws {Error} - If an error occurs during the deletion process
  * @description - This endpoint deletes an event from the database using its ID.
  */
-app.delete("/api/events/:id", async (req, res) => {
+app.delete("/api/events/:id", auth, async (req, res) => {
   try {
     await eventSchema.findByIdAndDelete(req.params.id);
     res.status(204).end();
@@ -506,7 +506,7 @@ app.get("/api/submissions", auth, async (req, res) => {
  * @description - This endpoint retrieves a specific submission from the database using its ID.
  * @requires auth - Middleware to authenticate the request
  */
-app.get("/api/submissions/:id/file", async (req, res) => {
+app.get("/api/submissions/:id/file", auth, async (req, res) => {
   try {
     const submission = await submissionSchema.findById(req.params.id);
     if (!submission || !submission.file) {
@@ -525,7 +525,7 @@ app.get("/api/submissions/:id/file", async (req, res) => {
   }
 });
 
-app.delete("/api/submissions/:id", async (req, res) => {
+app.delete("/api/submissions/:id", auth, async (req, res) => {
   try {
     await submissionSchema.findByIdAndDelete(req.params.id);
     res.status(204).end();
