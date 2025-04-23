@@ -25,6 +25,18 @@ WORKDIR /app
 # Copy the entire app first
 COPY . .
 
+# Ensure models have correct filenames
+RUN mkdir -p /app/backend/models
+COPY backend/models/event.js /app/backend/models/event.js
+COPY backend/models/submission.js /app/backend/models/submission.js
+COPY backend/models/user.js /app/backend/models/User.js
+
+# Fix case sensitivity issues in require statements
+RUN if [ -f "backend/server.js" ]; then \
+    sed -i 's/\.\/models\/Event/\.\/models\/event/g' backend/server.js; \
+    sed -i 's/\.\/models\/Submission/\.\/models\/submission/g' backend/server.js; \
+    fi
+
 # Install Node.js dependencies in the backend directory
 WORKDIR /app
 RUN npm install --legacy-peer-deps --no-fund --no-audit
@@ -55,11 +67,23 @@ RUN mkdir -p backend/pdfs
 RUN find ai_processing -type f -name "*.py" -exec sed -i 's|C:\\Program Files\\Tesseract-OCR\\tesseract.exe|/usr/bin/tesseract|g' {} \; || true
 RUN find ai_processing -type f -name "*.py" -exec sed -i 's|C:\\Program Files\\poppler-24.08.0\\Library\\bin|/usr/bin|g' {} \; || true
 
+# List directory structure for debugging
+RUN find backend -type f | sort
+RUN ls -la backend/models/
+
 # Set environment variables
 ENV NODE_ENV=production
 
 # Expose the port
 EXPOSE 5000
+
+# Debug directory structure
+RUN echo "Listing backend directory:"
+RUN ls -la backend/
+RUN echo "Listing models directory:"
+RUN ls -la backend/models/
+RUN echo "Checking server.js requires:"
+RUN grep -n "require" backend/server.js
 
 # Start the server
 CMD ["node", "backend/server.js"]
