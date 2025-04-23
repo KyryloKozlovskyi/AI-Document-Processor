@@ -1,70 +1,204 @@
-# Getting Started with Create React App
+# AI Document Processor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AI Document Processor is an advanced event management system with AI-powered form processing capabilities designed for small businesses. The application allows users to submit forms and PDF documents, which are automatically analyzed using artificial intelligence to extract and process relevant information.
 
-## Available Scripts
+## 📋 Table of Contents
 
-In the project directory, you can run:
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the Application](#running-the-application)
+- [API Reference](#api-reference)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Contributors](#contributors)
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Event Management**: Create, update, and delete events
+- **Form Submissions**: Accept submissions with optional PDF file uploads
+- **AI Document Analysis**: Automatically analyze and extract information from PDF documents
+- **AI Query Interface**: Ask questions about submitted documents using natural language
+- **Authentication**: Secure admin access with JWT authentication
+- **Email Notifications**: Automatic confirmation emails to users upon submission
+- **Payment Tracking**: Track payment status of submissions
+- **Responsive UI**: Modern, mobile-friendly user interface
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Technologies Used
 
-### `npm test`
+### Frontend
+- React
+- React Bootstrap
+- React Router
+- Axios
+- React Markdown
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend
+- Node.js
+- Express
+- MongoDB with Mongoose
+- JWT Authentication
+- Multer (file handling)
+- Resend (email delivery)
 
-### `npm run build`
+### AI & Document Processing
+- Python
+- OpenRouter API
+- Llama 4 Maverick
+- Tesseract OCR
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🏗️ Architecture
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The application follows a three-tier architecture:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Frontend**: React-based user interface
+2. **Backend**: Node.js/Express RESTful API
+3. **AI Processing Layer**: Python scripts for document analysis and AI queries
 
-### `npm run eject`
+## 🔍 Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Node.js (v14+)
+- Python (v3.8+)
+- MongoDB
+- OpenRouter API key (optional, for enhanced AI features)
+- Resend API key (for email functionality)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📦 Installation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/AI-Document-Processor.git
+cd AI-Document-Processor
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Install frontend dependencies:
+```bash
+npm install
+```
 
-## Learn More
+3. Install backend dependencies:
+```bash
+cd backend
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4. Install Python dependencies:
+```bash
+pip install -r ai_processing/requirements.txt
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🔑 Environment Variables
 
-### Code Splitting
+Create a `.env` file in the root directory with the following variables:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+# Server Configuration
+SERVER_PORT=5000
 
-### Analyzing the Bundle Size
+# MongoDB Connection
+MONGO_URI=mongodb://localhost:27017/ai-document-processor
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# Authentication
+JWT_SECRET=your_jwt_secret_key
 
-### Making a Progressive Web App
+# Email Service
+RESEND_API_KEY=your_resend_api_key
+RESEND_DOMAIN=no-reply@yourdomain.com
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# AI Services
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
 
-### Advanced Configuration
+## 🚀 Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Start the MongoDB server:
+```bash
+mongod
+```
 
-### Deployment
+2. Start the backend server:
+```bash
+cd backend
+nodemon server.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+3. In a new terminal, start the frontend development server:
+```bash
+npm start
+```
 
-### `npm run build` fails to minify
+4. Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📚 API Reference
+
+### Authentication Endpoints
+
+- `POST /api/auth/login` - Login as administrator
+- `GET /api/auth/verify` - Verify authentication token
+
+### Event Endpoints
+
+- `GET /api/events` - Get all events
+- `GET /api/events/:id` - Get a specific event
+- `POST /api/events` - Create a new event (requires authentication)
+- `PUT /api/events/:id` - Update an event (requires authentication)
+- `DELETE /api/events/:id` - Delete an event (requires authentication)
+
+### Submission Endpoints
+
+- `POST /api/submit` - Submit a form with optional file upload
+- `GET /api/submissions` - Get all submissions (requires authentication)
+- `GET /api/submissions/:id/file` - Download a submission file (requires authentication)
+- `PATCH /api/submissions/:id` - Update submission payment status (requires authentication)
+- `DELETE /api/submissions/:id` - Delete a submission (requires authentication)
+
+### AI Processing Endpoints
+
+- `GET /analyze/:submissionId` - Analyze a PDF submission (requires authentication)
+- `GET /query/:query` - Query the AI model with a specified query (requires authentication)
+- `GET /api/check-python` - Check Python environment configuration (requires authentication)
+
+### Document Download Endpoints
+
+- `GET /companyform` - Download company form template
+
+## 🧪 Testing
+
+The project includes HTTP-based API tests located in the `Testing/endpoint-testing` directory. You can run these tests using VS Code's REST Client extension or any other HTTP client such as Postman.
+
+Example test files:
+- `event-endpoint-tests.http` - Tests for event-related endpoints
+- `submission-endpoint-tests.http` - Tests for submission-related endpoints
+
+## 📁 Project Structure
+
+```
+AI-Document-Processor/
+├── ai_processing/           # Python scripts for AI processing
+├── backend/                 # Node.js backend
+│   ├── middlewares/         # Express middlewares
+│   ├── models/              # Mongoose schemas
+│   ├── pdfs/                # PDF templates
+│   └── server.js            # Express server
+├── public/                  # Static files
+├── src/                     # React frontend
+│   ├── components/          # React components
+│   │   ├── AdminViews/      # Admin panel components
+│   │   └── styles/          # Component-specific styles
+│   ├── App.js               # Main App component
+│   └── index.js             # React entry point
+└── Testing/                 # Test files
+    └── endpoint-testing/    # API endpoint tests
+```
+
+## 👥 Contributors
+
+- Fionn McCarthy (G00414386)
+- Kyrylo Kozlovskyi (G00425385)
+
+---
+
+**About:** This application was developed as a 3rd year final project at Atlantic Technological University, Galway. The AI-Document Processor harnesses AI to streamline form and PDF analysis—helping organizations organize and understand their data faster.
