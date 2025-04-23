@@ -11,7 +11,8 @@ import {
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import ChatPanel from "./ChatPanel";
-import "./styles/SeeRecords.css"; // Import the updated CSS file
+import "./styles/SeeRecords.css";
+import api from "../../utils/api"; // Import the API utility
 
 const SeeRecords = () => {
   const [records, setRecords] = useState([]);
@@ -59,7 +60,7 @@ const SeeRecords = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/events");
+        const response = await api.get("/api/events");
         setEvents(response.data);
       } catch (err) {
         console.error("Events fetch error:", err);
@@ -77,12 +78,7 @@ const SeeRecords = () => {
       return;
     }
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/submissions/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/api/submissions/${id}`);
       setRecords(records.filter((record) => record._id !== id));
     } catch (err) {
       console.error("Error deleting submission:", err);
@@ -94,16 +90,7 @@ const SeeRecords = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:5000/api/submissions",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await api.get("/api/submissions");
         setRecords(response.data);
         setLoading(false);
       } catch (err) {
@@ -118,16 +105,9 @@ const SeeRecords = () => {
 
   const downloadFile = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:5000/api/submissions/${id}/file`,
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get(`/api/submissions/${id}/file`, {
+        responseType: "blob",
+      });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -146,13 +126,7 @@ const SeeRecords = () => {
   const analyzeDocument = async (id) => {
     try {
       setAnalyzingDocument(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:5000/analyze/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const response = await api.get(`/analyze/${id}`);
       setAnalysisData(response.data);
       setShowAnalysisModal(true);
       setAnalyzingDocument(false);
@@ -331,12 +305,7 @@ const SeeRecords = () => {
                         return; // If user cancels, do nothing
                       }
                       try {
-                        const token = localStorage.getItem("token");
-                        await axios.patch(
-                          `http://localhost:5000/api/submissions/${record._id}`,
-                          { paid: !record.paid },
-                          { headers: { Authorization: `Bearer ${token}` } }
-                        );
+                        await api.patch(`/api/submissions/${record._id}`, { paid: !record.paid });
                         setRecords(
                           records.map((r) =>
                             r._id === record._id ? { ...r, paid: !r.paid } : r

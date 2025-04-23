@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "./styles/EventForms.css";
+import api from "../../utils/api"; // Import the API utility
 
 const EventCreate = () => {
   const navigate = useNavigate();
@@ -27,12 +27,7 @@ const EventCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      await axios.post("http://localhost:5000/api/events", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.post("/api/events", formData);
       setMessage("Event created successfully");
       setTimeout(() => {
         navigate("/admin");

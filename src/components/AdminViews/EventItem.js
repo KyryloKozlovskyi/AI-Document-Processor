@@ -1,26 +1,24 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import axios from 'axios';
+import React from "react";
+import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
-import "./styles/EventItem.css"; // Import the new CSS file
+import "./styles/EventItem.css";
+import api from "../../utils/api"; // Import the API utility
 
 const EventItem = ({ myEvent, ReloadData }) => {
   const handleDelete = async (id) => {
     // Show confirmation popup
-    const confirmDelete = window.confirm("Are you sure you want to delete this event?"
-        + "\nThis will delete submissions associated with this event as well, and cannot be undone.");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this event?" +
+        "\nThis will delete submissions associated with this event as well, and cannot be undone."
+    );
     if (!confirmDelete) {
       return;
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/events/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      await api.delete(`/api/events/${id}`);
       console.log("Event deleted successfully");
       ReloadData(); // Call ReloadData to refresh the events list
     } catch (err) {
@@ -29,10 +27,10 @@ const EventItem = ({ myEvent, ReloadData }) => {
   };
 
   // Format the date nicely
-  const formattedDate = new Date(myEvent.date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const formattedDate = new Date(myEvent.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   return (
@@ -49,11 +47,13 @@ const EventItem = ({ myEvent, ReloadData }) => {
           <Link to={"/events/update/" + myEvent._id}>
             <Button variant="warning">Update</Button>
           </Link>
-          <Button variant="danger" onClick={() => handleDelete(myEvent._id)}>Delete</Button>
+          <Button variant="danger" onClick={() => handleDelete(myEvent._id)}>
+            Delete
+          </Button>
         </div>
       </Card>
     </Col>
   );
-}
+};
 
 export default EventItem;
