@@ -13,8 +13,8 @@ const multer = require("multer");
 const { Resend } = require("resend");
 const { spawn } = require("child_process");
 
-const eventSchema = require("./models/event");
-const submissionSchema = require("./models/submission");
+const eventSchema = require("./models/Event");
+const submissionSchema = require("./models/Submission");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -27,35 +27,14 @@ const User = require("./models/User");
 // Initialize Express app
 const app = express();
 
-// Serve static files from the React app build directory
-const path = require('path');
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
-
-// Health check route for Render
-app.get('/', (req, res) => {
-  res.status(200).send('Health check OK!');
-});
-
 // Enable CORS for all incoming requests
-const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? true // Allow all origins in production
-      : "http://localhost:3000", // Only allow this origin in development
-  credentials: true, // Allow credentials
-};
-
-app.use(cors(corsOptions));
-
-// Update the other headers
+app.use(cors());
 app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-  );
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
 });
@@ -66,9 +45,7 @@ app.use(bodyParser.json());
 
 // Connect to MongoDB using Mongoose
 mongoose
-  .connect(
-    process.env.MONGO_URI || "mongodb://localhost:27017/ai-document-processor"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
@@ -170,19 +147,19 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
   }
 });
 
-/**
+/** 
  * Endpoint to query the AI model with a specified query
  * @param {string} query - The query string to send to the AI model
  * @param {string} submissionId - Optional ID of the submission to analyze
  * @returns {object} - JSON response containing the AI model's response
  * @throws {Error} - If an error occurs during the query process
  * @description - This endpoint allows users to query the AI model with a specific query string.
- */
+*/
 app.get("/query/:query", auth, async (req, res) => {
   try {
     const query = req.params.query;
     const submissionId = req.query.submissionId; // Get submissionId from query params
-
+    
     // Debug logs to help diagnose issues
     console.log("Query received:", query);
     console.log("Submission ID:", submissionId);
@@ -201,9 +178,15 @@ app.get("/query/:query", auth, async (req, res) => {
 
     // Fetch api key from environment variables
     const apiKey = process.env.OPENROUTER_API_KEY || "no_key";
-
+    
     // Create an array of arguments for the Python script
-    let pythonArgs = [scriptPath, "--query", query, "--key", apiKey];
+    let pythonArgs = [
+      scriptPath,
+      "--query",
+      query,
+      "--key",
+      apiKey,
+    ];
 
     // If a submission ID is provided, fetch the associated file
     if (submissionId) {
@@ -214,7 +197,7 @@ app.get("/query/:query", auth, async (req, res) => {
           const tempDir = require("os").tmpdir();
           const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
           require("fs").writeFileSync(tempFilePath, submission.file.data);
-
+          
           // Add PDF path to arguments
           pythonArgs.push("--pdf");
           pythonArgs.push(tempFilePath);
@@ -262,7 +245,7 @@ app.get("/query/:query", auth, async (req, res) => {
         console.error("Error parsing JSON response:", jsonError);
         res.status(500).json({
           message: "Error processing AI response",
-          details: "Invalid response format",
+          details: "Invalid response format"
         });
       }
     });
@@ -649,19 +632,9 @@ app.get("/api/check-python", auth, async (req, res) => {
   }
 });
 
-// Handle React routing, return all requests to React app
-app.get('*', (req, res, next) => {
-  // Skip API routes
-  if (req.path.startsWith('/api') || 
-      req.path.startsWith('/query') || 
-      req.path.startsWith('/analyze') || 
-      req.path.startsWith('/companyform')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
-});
-
 // Listen for incoming requests on the specified port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+

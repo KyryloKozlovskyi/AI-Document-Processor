@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./styles/ChatPanel.css"; // Import CSS for styling.
+import axios from "axios"; // Import axios for API calls.
 import ReactMarkdown from "react-markdown"; // Import ReactMarkdown for rendering markdown.
-import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
-import api from "../../utils/api"; // Import the API utility
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 const ChatPanel = () => {
   const [isPanelOpen, setIsPanelOpen] = useState(false); // Active status.
@@ -15,7 +16,15 @@ const ChatPanel = () => {
   useEffect(() => {
     const fetchSubmissionIds = async () => {
       try {
-        const response = await api.get("/api/submissions");
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:5000/api/submissions",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         // Extract IDs from submissions
         const ids = response.data.map((submission) => ({
@@ -41,17 +50,22 @@ const ChatPanel = () => {
   const queryChatbot = async (query, submissionId) => {
     try {
       setThinking(true);
+      const token = localStorage.getItem("token");
 
+      // Fix: Use proper URL structure with query parameters
       // The query should be properly encoded to handle special characters
       const encodedQuery = encodeURIComponent(query);
 
       // Build URL with query params properly
-      let url = `/query/${encodedQuery}`;
+      let url = `http://localhost:5000/query/${encodedQuery}`;
 
       console.log("Sending request to:", url);
       console.log("With submission ID:", submissionId || "none");
 
-      const response = await api.get(url, {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         params: submissionId ? { submissionId } : {}, // Add submissionId as query parameter
       });
 
@@ -62,7 +76,7 @@ const ChatPanel = () => {
       console.error("Error with chatbot:", err);
       setError(
         "Failed to analyze document: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
       setThinking(false);
     }

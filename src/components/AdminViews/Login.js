@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAdmin } from "./AdminContext";
-import "./styles/Login.css";
-import api from "../../utils/api"; // Import the API utility
-import API_URL from "../../config"; // Import the API URL config
+import "./styles/Login.css"; // We'll create this file
 
 // Admin login component
 const Login = () => {
@@ -22,7 +21,10 @@ const Login = () => {
     e.preventDefault();
     try {
       // Send a POST request to the server with the login credentials
-      const response = await api.post("/api/auth/login", credentials);
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        credentials
+      );
       localStorage.setItem("token", response.data.token);
       login(response.data.token);
       navigate("/admin");
