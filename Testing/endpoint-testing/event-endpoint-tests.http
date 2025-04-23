@@ -1,0 +1,45 @@
+// Test the event API endpoints for the server
+
+// Get all events
+GET http://localhost:5000/api/events
+
+###
+
+// Get event by ID
+// e.g. 67b33a06ec0a062588ab1b05
+// 67b339c9ec0a062588ab1b03
+// 67b33a2cec0a062588ab1b07
+GET http://localhost:5000/api/events/event_id
+
+###
+
+// Create a new event
+POST http://localhost:5000/api/events
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+Content-Type: application/json
+
+{
+    "courseName": "Test Event",
+    "venue": "Test Location",
+    "date": "2025-10-25",
+    "price" : 100.0,
+    "emailText": "Test email text"
+}
+
+### 
+
+// Update an event by ID
+// Update test event created above
+// e.g. 68092b1baee467a1c538f930
+PUT http://localhost:5000/api/events/67b33a06ec0a062588ab1b05
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+Content-Type: application/json
+
+{
+    "courseName": "Updated Event",
+    "venue": "Updated Location",
+    "date": "2025-10-26",
+    "price" : 150.0,
+    "emailText": "Updated email text"
+}
+

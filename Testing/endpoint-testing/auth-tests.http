@@ -1,0 +1,36 @@
+// Below are tests for the authentication endpoints of the application.
+
+// Login to get an authentication token
+// Test with valid credentials
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "123456"
+}
+
+###
+
+// Test with invalid credentials
+POST http://localhost:5000/api/auth/login
+
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "654321"
+}
+
+###
+
+// Verify token
+// Paste your own token here from the correct admin login response
+GET http://localhost:5000/api/auth/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODA5MTAxNTNlNjNiZDMxMDMyYmExMjkiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NDU0MzAzNTksImV4cCI6MTc0NTUxNjc1OX0.j0K5HhJJ6MMH9DEztJu5szQtazm4hH8KMxS1Dv-zAGY
+
+###
+
+// Test with invalid token
+GET http://localhost:5000/api/auth/verify
+Authorization: Bearer invalid_token
