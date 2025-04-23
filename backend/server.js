@@ -28,13 +28,21 @@ const User = require("./models/User");
 const app = express();
 
 // Enable CORS for all incoming requests
-app.use(cors());
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? true  // Allow all origins in production
+    : 'http://localhost:3000', // Only allow this origin in development
+  credentials: true, // Allow credentials
+};
+
+app.use(cors(corsOptions));
+
+// Update the other headers
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   next();
 });
@@ -45,7 +53,7 @@ app.use(bodyParser.json());
 
 // Connect to MongoDB using Mongoose
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/ai-document-processor")
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

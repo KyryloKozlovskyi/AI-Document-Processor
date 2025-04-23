@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: ai-document-processor
+    env: docker
+    plan: starter
+    buildCommand: docker build -t ai-document-processor .
+    startCommand: docker run -p $PORT:5000 -e MONGO_URI=$MONGO_URI -e RESEND_API_KEY=$RESEND_API_KEY -e OPENROUTER_API_KEY=$OPENROUTER_API_KEY -e JWT_SECRET=$JWT_SECRET -e RESEND_DOMAIN=$RESEND_DOMAIN ai-document-processor
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: RESEND_DOMAIN
+        sync: false
