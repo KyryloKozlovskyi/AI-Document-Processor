@@ -28,12 +28,12 @@ const User = require("./models/User");
 const app = express();
 
 // Serve static files from the React app build directory
-const path = require('path');
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+const path = require("path");
+app.use(express.static(path.join(__dirname, "..", "frontend", "build")));
 
 // Health check route for Render
-app.get('/', (req, res) => {
-  res.status(200).send('Health check OK!');
+app.get("/", (req, res) => {
+  res.status(200).send("Health check OK!");
 });
 
 // Enable CORS for all incoming requests
@@ -109,64 +109,78 @@ app.get("/analyze/:submissionId", auth, async (req, res) => {
 
     // Fix the path to the Python script - use path.resolve for reliability
     const path = require("path");
-    const scriptPath = path.resolve(
-      __dirname,
-      "..",
-      "ai_processing",
-      "processor.py"
-    );
+    const scriptPath =
+      process.env.NODE_ENV === "production"
+        ? path.resolve(__dirname, "..", "ai_processing", "processor.py")
+        : path.resolve(__dirname, "..", "ai_processing", "processor.py");
 
-    // Spawn a Python process to analyze the PDF file
-    const python = spawn("python", [
-      scriptPath,
-      "--pdf",
-      tempFilePath,
-      "--direct-output", // Add a new flag to indicate direct output mode
-    ]);
+    console.log("Starting Python analysis process...");
+    console.log("Script path resolved to:", scriptPath);
+    console.log("Args:", [scriptPath, "--file", tempFilePath]);
 
-    // Collect data from the Python script's standard output
-    python.stdout.on("data", function (data) {
-      console.log("Pipe data from python script ...");
-      dataToSend += data.toString();
+    const python = spawn("python", [scriptPath, "--file", tempFilePath]);
+
+    let pythonData = "";
+    let pythonError = "";
+
+    // Capture standard output
+    python.stdout.on("data", (data) => {
+      console.log("Python stdout:", data.toString());
+      pythonData += data.toString();
     });
 
-    // Handle error output from the Python script
-    python.stderr.on("data", function (data) {
-      console.error("Python error:", data.toString());
+    // Capture standard error
+    python.stderr.on("data", (data) => {
+      console.error("Python stderr:", data.toString());
+      pythonError += data.toString();
     });
 
-    // Handle the completion of the Python process
+    // Handle process completion
     python.on("close", (code) => {
-      console.log(`Python process closed with code ${code}`);
-
-      // Clean up the temporary file
-      try {
-        require("fs").unlinkSync(tempFilePath);
-      } catch (err) {
-        console.error("Error deleting temp file:", err);
-      }
-
-      // If process exited with error
+      console.log(`Python process exited with code ${code}`);
       if (code !== 0) {
         return res.status(500).json({
-          message: "Error analyzing document",
-          details: dataToSend,
+          message: "Analysis failed",
+          error: pythonError,
+          exitCode: code,
         });
       }
 
-      // Send data to browser
-      res.json({
-        submissionId,
-        filename: submission.file.name,
-        analysis: dataToSend,
-      });
+      try {
+        // Parse the output...
+        // ... rest of existing code ...
+        // Clean up the temporary file
+        try {
+          require("fs").unlinkSync(tempFilePath);
+        } catch (err) {
+          console.error("Error deleting temp file:", err);
+        }
+
+        // If process exited with error
+        if (code !== 0) {
+          return res.status(500).json({
+            message: "Error analyzing document",
+            details: dataToSend,
+          });
+        }
+
+        // Send data to browser
+        res.json({
+          submissionId,
+          filename: submission.file.name,
+          analysis: dataToSend,
+        });
+      } catch (err) {
+        console.error("Error parsing Python output:", err);
+        return res.status(500).json({
+          message: "Error parsing analysis output",
+          error: err.message,
+        });
+      }
     });
-  } catch (error) {
-    console.error("Error in analyze endpoint:", error);
-    res.status(500).json({
-      message: "Error processing analysis request",
-      error: error.message,
-    });
+  } catch (err) {
+    console.error("Error in /analyze endpoint:", err);
+    res.status(500).json({ message: "Analysis failed", error: err.message });
   }
 });
 
@@ -444,18 +458,31 @@ app.post("/api/submit", upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "Invalid email address" });
     }
 
+    // In your /api/submit endpoint, ensure the file is saved persistently
+
+    // Create directories if they don't exist
+    const fs = require('fs');
+    const uploadsDir = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    // Save the file to disk
+    const fileId = new mongoose.Types.ObjectId();
+    const filePath = path.join(uploadsDir, `${fileId}.pdf`);
+    fs.writeFileSync(filePath, req.file.buffer);
+
+    // Store the file path in the submission document
     const submission = new submissionSchema({
       eventId,
       type,
       name,
       email,
-      file: req.file
-        ? {
-            data: req.file.buffer,
-            contentType: req.file.mimetype,
-            name: req.file.originalname,
-          }
-        : null,
+      file: {
+        name: req.file.originalname,
+        path: filePath, // Store the persistent path
+        data: req.file.buffer // Continue storing the buffer too
+      }
     });
 
     await submission.save();
@@ -649,16 +676,49 @@ app.get("/api/check-python", auth, async (req, res) => {
   }
 });
 
+// Add a debug endpoint to check Python
+
+app.get('/api/check-python', auth, (req, res) => {
+  const python = spawn('python', ['--version']);
+  
+  let output = '';
+  let error = '';
+  
+  python.stdout.on('data', (data) => {
+    output += data.toString();
+  });
+  
+  python.stderr.on('data', (data) => {
+    error += data.toString();
+  });
+  
+  python.on('close', (code) => {
+    res.json({
+      code,
+      output,
+      error,
+      env: process.env,
+      paths: {
+        scriptPath: path.resolve(__dirname, '..', 'ai_processing', 'processor.py'),
+        cwd: process.cwd(),
+        __dirname
+      }
+    });
+  });
+});
+
 // Handle React routing, return all requests to React app
-app.get('*', (req, res, next) => {
+app.get("*", (req, res, next) => {
   // Skip API routes
-  if (req.path.startsWith('/api') || 
-      req.path.startsWith('/query') || 
-      req.path.startsWith('/analyze') || 
-      req.path.startsWith('/companyform')) {
+  if (
+    req.path.startsWith("/api") ||
+    req.path.startsWith("/query") ||
+    req.path.startsWith("/analyze") ||
+    req.path.startsWith("/companyform")
+  ) {
     return next();
   }
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, "..", "frontend", "build", "index.html"));
 });
 
 // Listen for incoming requests on the specified port
