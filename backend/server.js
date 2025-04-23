@@ -27,6 +27,15 @@ const User = require("./models/User");
 // Initialize Express app
 const app = express();
 
+// Serve static files from the React app build directory
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+
+// Health check route for Render
+app.get('/', (req, res) => {
+  res.status(200).send('Health check OK!');
+});
+
 // Enable CORS for all incoming requests
 const corsOptions = {
   origin:
@@ -638,6 +647,18 @@ app.get("/api/check-python", auth, async (req, res) => {
       error: error.message,
     });
   }
+});
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res, next) => {
+  // Skip API routes
+  if (req.path.startsWith('/api') || 
+      req.path.startsWith('/query') || 
+      req.path.startsWith('/analyze') || 
+      req.path.startsWith('/companyform')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
 });
 
 // Listen for incoming requests on the specified port
