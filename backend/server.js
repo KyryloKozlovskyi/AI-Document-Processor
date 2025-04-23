@@ -2,7 +2,7 @@
 require("dotenv").config({ override: true });
 
 // Server port, default 5000
-const port = process.env.SERVER_PORT || 5000;
+const PORT = process.env.SERVER_PORT || 5000;
 
 // Import required modules
 const express = require("express");
@@ -633,8 +633,8 @@ app.get("/api/check-python", auth, async (req, res) => {
 });
 
 // Listen for incoming requests on the specified port
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 
