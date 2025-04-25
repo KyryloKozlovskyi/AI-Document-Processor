@@ -126,7 +126,10 @@ const SeeRecords = () => {
   const analyzeDocument = async (id) => {
     try {
       setAnalyzingDocument(true);
-      const response = await api.get(`/analyze/${id}`);
+      // Make sure this URL matches exactly what your backend expects
+      const response = await api.get(`/api/analyze/${id}`);
+      // Check the response format and make sure it matches what you expect
+      console.log("Analysis response:", response.data);
       setAnalysisData(response.data);
       setShowAnalysisModal(true);
       setAnalyzingDocument(false);
