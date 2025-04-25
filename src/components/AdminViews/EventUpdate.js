@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "./styles/EventForms.css";
+import api from "../../utils/api"; // Import the API utility
 
 const EventUpdate = () => {
   const { id } = useParams(); // Get the event ID from the URL
@@ -21,8 +21,8 @@ const EventUpdate = () => {
     // Fetch the event details
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/events/${id}`,
+        const response = await api.get(
+          `/api/events/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -60,7 +60,7 @@ const EventUpdate = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/events/${id}`, formData, {
+      await api.put(`/api/events/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
