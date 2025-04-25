@@ -87,7 +87,7 @@ const upload = multer({ storage: storage });
  * @returns {object} - JSON response containing analysis results
  * @throws {Error} - If an error occurs during analysis or file handling
  */
-app.get("/analyze/:submissionId", auth, async (req, res) => {
+app.get("/api/analyze/:submissionId", auth, async (req, res) => {
   try {
     const submissionId = req.params.submissionId;
 
