@@ -145,7 +145,7 @@ app.get("/api/analyze/:submissionId", auth, async (req, res) => {
     // Use a simple fallback analysis if Python fails
     try {
       // Spawn with more detailed options and error handling
-      const python = spawn("python", [scriptPath, "--file", tempFilePath], {
+      const python = spawn("python", [scriptPath, "--pdf", tempFilePath, "--direct-output"], {
         stdio: ['pipe', 'pipe', 'pipe']
       });
 
