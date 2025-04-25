@@ -1,6 +1,8 @@
 # AI Document Processor
 
-AI Document Processor is an advanced event management system with AI-powered form processing capabilities designed for small businesses. The application allows users to submit forms and PDF documents, which are analysed and summarised using artificial intelligence to extract and process relevant information.
+AI Document Processor is an event management system with AI-powered form processing capabilities designed for small businesses. The application allows users to submit forms and PDF documents, which are analysed and summarised using artificial intelligence to extract and process relevant information.
+
+🔗 **Live Demo:** [https://ai-document-processor.onrender.com](https://ai-document-processor.onrender.com)
 
 ## 📋 Table of Contents
 
@@ -14,6 +16,7 @@ AI Document Processor is an advanced event management system with AI-powered for
 - [API Reference](#api-reference)
 - [Testing](#testing)
 - [Project Structure](#project-structure)
+- [User Guide](#user-guide)
 - [Contributors](#contributors)
 
 ## ✨ Features
@@ -157,7 +160,7 @@ npm start
 
 ### AI Processing Endpoints
 
-- `GET /analyze/:submissionId` - analyse a PDF submission (requires authentication)
+- `GET /analyze/:submissionId` - Analyse a PDF submission (requires authentication)
 - `GET /query/:query` - Query the AI model with a specified query (requires authentication)
 - `GET /api/check-python` - Check Python environment configuration (requires authentication)
 
@@ -193,6 +196,30 @@ AI-Document-Processor/
 └── Testing/                 # Test files
     └── endpoint-testing/    # API endpoint tests
 ```
+
+## 🧑‍💻 User Guide
+
+The AI Document Processor is a web-based application that streamlines event enrolment and document analysis using AI.
+
+### 👤 For End Users
+
+- Submit your name, email, and course selection via the form
+- Optionally upload a signed PDF (e.g., for company enrolments)
+- Receive a confirmation email automatically
+
+### 🔐 For Admins
+
+- Login via the admin dashboard
+- Manage events (CRUD)
+- View and filter user submissions
+- Generate AI summaries for uploaded PDFs
+- Interact with the document via an AI chatbot
+
+### ⚙️ Deployment Notes
+
+- Deployed via Render.com
+- Ensure `.env` file is configured
+- Tested endpoints in production include file uploads, AI processing, and email delivery
 
 ## 👥 Contributors
 
