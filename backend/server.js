@@ -90,6 +90,7 @@ const upload = multer({ storage: storage });
 app.get("/api/analyze/:submissionId", auth, async (req, res) => {
   try {
     const submissionId = req.params.submissionId;
+    console.log("Analyzing submission:", submissionId);
 
     // Retrieve the submission from the database
     const submission = await submissionSchema.findById(submissionId);
@@ -97,87 +98,141 @@ app.get("/api/analyze/:submissionId", auth, async (req, res) => {
       return res.status(404).json({ message: "Submission or file not found" });
     }
 
+    console.log("Found submission, file name:", submission.file.name);
+
     // Create a temporary directory for processing
     const tempDir = require("os").tmpdir();
     const tempFilePath = `${tempDir}/${submission._id}_${submission.file.name}`;
 
-    // Write the file to disk
-    require("fs").writeFileSync(tempFilePath, submission.file.data);
+    // Write the file to disk with error handling
+    try {
+      require("fs").writeFileSync(tempFilePath, submission.file.data);
+      console.log("Temporary file created at:", tempFilePath);
+    } catch (fileErr) {
+      console.error("Error writing temporary file:", fileErr);
+      return res.status(500).json({ 
+        message: "Error creating temporary file", 
+        error: fileErr.message 
+      });
+    }
 
     // Variable to store the data sent from Python
     let dataToSend = "";
 
-    // Fix the path to the Python script - use path.resolve for reliability
+    // Get the actual path to the processor.py script
+    const fs = require('fs');
     const path = require("path");
-    const scriptPath =
-      process.env.NODE_ENV === "production"
-        ? path.resolve(__dirname, "..", "ai_processing", "processor.py")
-        : path.resolve(__dirname, "..", "ai_processing", "processor.py");
+    const scriptPath = path.resolve(
+      __dirname, 
+      "..", 
+      "ai_processing", 
+      "processor.py"
+    );
+
+    // Check if the script exists before trying to run it
+    if (!fs.existsSync(scriptPath)) {
+      console.error("Python script not found at:", scriptPath);
+      return res.status(500).json({ 
+        message: "Analysis script not found", 
+        scriptPath 
+      });
+    }
 
     console.log("Starting Python analysis process...");
-    console.log("Script path resolved to:", scriptPath);
-    console.log("Args:", [scriptPath, "--file", tempFilePath]);
+    console.log("Script path:", scriptPath);
+    console.log("File path:", tempFilePath);
 
-    const python = spawn("python", [scriptPath, "--file", tempFilePath]);
+    // Use a simple fallback analysis if Python fails
+    try {
+      // Spawn with more detailed options and error handling
+      const python = spawn("python", [scriptPath, "--file", tempFilePath], {
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
 
-    let pythonData = "";
-    let pythonError = "";
+      let pythonData = "";
+      let pythonError = "";
 
-    // Capture standard output
-    python.stdout.on("data", (data) => {
-      console.log("Python stdout:", data.toString());
-      pythonData += data.toString();
-    });
+      // Capture standard output
+      python.stdout.on("data", (data) => {
+        console.log("Python stdout:", data.toString());
+        pythonData += data.toString();
+      });
 
-    // Capture standard error
-    python.stderr.on("data", (data) => {
-      console.error("Python stderr:", data.toString());
-      pythonError += data.toString();
-    });
+      // Capture standard error
+      python.stderr.on("data", (data) => {
+        console.error("Python stderr:", data.toString());
+        pythonError += data.toString();
+      });
 
-    // Handle process completion
-    python.on("close", (code) => {
-      console.log(`Python process exited with code ${code}`);
-      if (code !== 0) {
-        return res.status(500).json({
-          message: "Analysis failed",
-          error: pythonError,
-          exitCode: code,
-        });
-      }
-
-      try {
-        // Parse the output...
-        // ... rest of existing code ...
+      // Handle process completion
+      python.on("close", (code) => {
+        console.log(`Python process exited with code ${code}`);
+        
         // Clean up the temporary file
         try {
-          require("fs").unlinkSync(tempFilePath);
+          fs.unlinkSync(tempFilePath);
+          console.log("Temporary file deleted");
         } catch (err) {
           console.error("Error deleting temp file:", err);
         }
 
         // If process exited with error
         if (code !== 0) {
-          return res.status(500).json({
-            message: "Error analyzing document",
-            details: dataToSend,
+          console.error("Python process failed with code:", code);
+          
+          // Generate a basic text analysis as fallback
+          const fallbackAnalysis = `# Document Analysis
+
+## Basic Information
+- **Filename**: ${submission.file.name}
+- **Submission Type**: ${submission.type}
+- **Submitted By**: ${submission.name}
+- **Date**: ${new Date(submission.createdAt).toLocaleDateString()}
+
+## Error Information
+Python analysis process failed with code ${code}.
+${pythonError ? `\nError details: ${pythonError}` : ''}
+
+## Technical Information
+The AI analysis engine encountered an error while processing this document. 
+This could be due to:
+- PDF format issues
+- OCR text extraction failures
+- Python environment configuration
+
+Please try again later or contact the administrator.`;
+
+          // Send fallback analysis to client
+          return res.json({
+            submissionId,
+            filename: submission.file.name,
+            analysis: fallbackAnalysis,
           });
         }
 
-        // Send data to browser
+        // Send successful analysis
         res.json({
           submissionId,
           filename: submission.file.name,
-          analysis: dataToSend,
+          analysis: pythonData || "No output from analysis",
         });
-      } catch (err) {
-        console.error("Error parsing Python output:", err);
-        return res.status(500).json({
-          message: "Error parsing analysis output",
-          error: err.message,
+      });
+      
+      // Handle spawn errors
+      python.on('error', (err) => {
+        console.error("Error spawning Python process:", err);
+        res.status(500).json({ 
+          message: "Failed to start analysis process", 
+          error: err.message 
         });
-      }
-    });
+      });
+    } catch (spawnError) {
+      console.error("Error spawning Python process:", spawnError);
+      res.status(500).json({ 
+        message: "Error starting analysis process", 
+        error: spawnError.message 
+      });
+    }
   } catch (err) {
     console.error("Error in /analyze endpoint:", err);
     res.status(500).json({ message: "Analysis failed", error: err.message });
